@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocab Sweeper - Інтерактивне вивчення англійської</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        /* 3D Card Flip Styling */
+        .card-container {
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .card-container.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 1px solid #475569;
+        }
+
+        .card-front:hover {
+            border-color: #38bdf8;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+            border: 1px solid #10b981;
+            transform: rotateY(180deg);
+            overflow-y: auto;
+        }
+
+        /* Explosion scatter animation effect */
+        .card-container.exploded {
+            animation: explode 0.8s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Custom Scrollbar for card backs */
+        .card-back::-webkit-scrollbar {
+            width: 3px;
+        }
+        .card-back::-webkit-scrollbar-thumb {
+            background: #059669;
+            border-radius: 4px;
+        }
+
+        /* Responsive grid adjustments */
+        .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .grid-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+        .grid-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+        .grid-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+        .grid-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-2 md:p-6">
+
+    <!-- Top Navigation Header -->
+    <header class="max-w-7xl w-full mx-auto flex flex-wrap justify-between items-center bg-slate-800/80 backdrop-blur border border-slate-700 rounded-2xl p-4 mb-4 shadow-xl">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-amber-500 text-slate-900 rounded-xl flex items-center justify-center font-extrabold text-xl shadow-lg shadow-amber-500/20">
+                <i class="fa-solid fa-bomb"></i>
+            </div>
+            <div>
+                <h1 class="font-extrabold text-xl tracking-tight text-white flex items-center gap-2">
+                    Vocab Sweeper
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">EN Game</span>
+                </h1>
+                <p class="text-xs text-slate-400">Шукай відповідності слів та не підірвися!</p>
+            </div>
+        </div>
+
+        <!-- Level Indicator & Score -->
+        <div class="flex items-center space-x-4 mt-2 sm:mt-0">
+            <div class="bg-slate-900/80 border border-slate-700 px-4 py-2 rounded-xl text-center">
+                <span class="text-xs text-slate-400 block uppercase font-bold tracking-wider">Рівень</span>
+                <span id="level-badge" class="text-lg font-black text-amber-400">1 (4x4)</span>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-700 px-4 py-2 rounded-xl text-center">
+                <span class="text-xs text-slate-400 block uppercase font-bold tracking-wider">Прогрес</span>
+                <span id="progress-badge" class="text-lg font-black text-emerald-400">0 / 16</span>
+            </div>
+            <button id="btn-toggle-sidebar" class="bg-indigo-600 hover:bg-indigo-500 text-white p-3 rounded-xl shadow-lg shadow-indigo-600/30 transition transform active:scale-95">
+                <i class="fa-solid fa-book-medical text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 flex-1">
+        
+        <!-- Game Section (Takes 3 Columns on Large Screens) -->
+        <section class="lg:col-span-3 flex flex-col justify-start items-center space-y-4">
+            
+            <!-- Current Clue Banner -->
+            <div class="w-full bg-gradient-to-r from-slate-800 via-indigo-950 to-slate-800 border-2 border-indigo-500/50 rounded-2xl p-4 md:p-6 text-center shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 text-indigo-500/10 text-8xl font-black pointer-events-none">
+                    <i class="fa-solid fa-quote-right"></i>
+                </div>
+                <div class="text-xs uppercase font-extrabold text-indigo-400 tracking-widest mb-1">Опис поточного слова:</div>
+                <p id="target-definition" class="text-base md:text-xl font-medium text-slate-100 italic transition-all duration-300 min-h-[3rem] flex items-center justify-center">
+                    Завантаження завдання...
+                </p>
+            </div>
+
+            <!-- Card Grid Container -->
+            <div id="grid-wrapper" class="w-full flex-1 flex items-center justify-center py-2">
+                <div id="game-grid" class="grid gap-2 md:gap-3 w-full max-w-4xl transition-all duration-300">
+                    <!-- Cards will be dynamic inserted here -->
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Sidebar / Dictionary Management (1 Column) -->
+        <aside id="sidebar" class="bg-slate-800/90 border border-slate-700 rounded-2xl p-5 shadow-xl flex flex-col justify-between hidden lg:flex">
+            <div>
+                <div class="flex items-center justify-between border-b border-slate-700 pb-3 mb-4">
+                    <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-plus-circle text-indigo-400"></i>
+                        Додати слово
+                    </h2>
+                    <span id="dict-count" class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded-full font-semibold">0 слів</span>
+                </div>
+
+                <!-- Add Word Form -->
+                <form id="add-word-form" class="space-y-3 mb-6">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1 font-semibold">Слово англійською:</label>
+                        <div class="relative">
+                            <input type="text" id="input-word" placeholder="напр. Serendipity" required
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-submit-word"
+                        class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/20 active:scale-95">
+                        <i class="fa-solid fa-cloud-arrow-down"></i>
+                        <span>Отримати з словника</span>
+                    </button>
+                </form>
+
+                <div id="api-status" class="hidden text-xs p-3 rounded-xl mb-4 border"></div>
+
+                <!-- Instructions / Info -->
+                <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-700/50 space-y-2 text-xs text-slate-300">
+                    <h3 class="font-bold text-amber-400 flex items-center gap-1">
+                        <i class="fa-solid fa-circle-info"></i> Правила гри:
+                    </h3>
+                    <ul class="list-disc list-inside space-y-1 text-slate-400">
+                        <li>Прочитай опис вгорі та знайди відповідне слово.</li>
+                        <li>Правильний вибір відкриє картку та приклади з озвучкою.</li>
+                        <li>Помилка спричинить <b class="text-red-400">вибух</b> та скидання гри!</li>
+                        <li>Нові слова авто-завантажуються з API та зберігаються у браузері.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Restart Game Button -->
+            <button id="btn-reset-game" class="w-full mt-4 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold py-2.5 px-4 rounded-xl text-sm transition flex items-center justify-center gap-2 active:scale-95 border border-slate-600">
+                <i class="fa-solid fa-rotate-right"></i> Перезапустити гру
+            </button>
+        </aside>
+
+    </main>
+
+    <!-- Modal Notification Overlay for Explosion / Game Over / Victory -->
+    <div id="modal-overlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
+        <div id="modal-content" class="bg-slate-800 border-2 border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center shadow-2xl transform scale-90 transition-transform duration-300">
+            <div id="modal-icon" class="w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 shadow-xl">
+                <i class="fa-solid fa-bomb"></i>
+            </div>
+            <h2 id="modal-title" class="text-2xl font-black text-white mb-2">БАБАХ!</h2>
+            <p id="modal-message" class="text-sm text-slate-300 mb-6">Ви обрали неправильне слово. Усі картки розлетілися! Гра починається спочатку.</p>
+            <button id="modal-action-btn" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-extrabold py-3 px-6 rounded-xl transition transform active:scale-95 shadow-lg shadow-orange-500/20">
+                Спробувати знову
+            </button>
+        </div>
+    </div>
+
+    <script>
+        /* ==========================================================================
+           1. BUILT-IN VOCABULARY DATABASE (High Quality Dictionary Entries)
+           ========================================================================== */
+        const DEFAULT_WORDS = [
+            // Basic & Level 1 Pool
+            { word: "Ambition", definition: "A strong desire to do or to achieve something, typically requiring determination and hard work.", sentences: ["Her ambition was to become a leading scientist.", "He worked hard to fulfill his career ambitions."] },
+            { word: "Resilience", definition: "The capacity to withstand or recover quickly from difficult conditions or toughness.", sentences: ["The team showed great resilience after their initial defeat.", "Children often demonstrate remarkable emotional resilience."] },
+            { word: "Curiosity", definition: "A strong desire to know or learn something new or unusual.", sentences: ["Her curiosity led her to explore the ancient library.", "Intellectual curiosity is key to personal growth."] },
+            { word: "Gratitude", definition: "The quality of being thankful; readiness to show appreciation and return kindness.", sentences: ["He expressed deep gratitude for all their help.", "Practicing gratitude improves daily happiness."] },
+            { word: "Empathy", definition: "The ability to understand and share the feelings and emotions of another person.", sentences: ["A good leader shows empathy towards team members.", "Empathy helps build stronger human relationships."] },
+            { word: "Harmony", definition: "The combination of simultaneously sounded musical notes or a state of peaceful agreement.", sentences: ["They lived together in complete peace and harmony.", "The vocal harmonies in this song are beautiful."] },
+            { word: "Integrity", definition: "The quality of being honest and having strong moral principles that you refuse to change.", sentences: ["He is known throughout the company for his integrity.", "Always act with integrity, even when no one is watching."] },
+            { word: "Optimism", definition: "Hopefulness and confidence about the future or the success of something.", sentences: ["Her optimism inspired everyone during tough times.", "There is growing optimism about economic recovery."] },
+            { word: "Wisdom", definition: "The quality of having experience, knowledge, and good judgment.", sentences: ["With age often comes true wisdom.", "He shared words of wisdom with his students."] },
+            { word: "Compassion", definition: "Sympathetic pity and concern for the sufferings or misfortunes of others.", sentences: ["She felt deep compassion for the homeless animals.", "Treating patients with compassion is essential."] },
+            { word: "Patience", definition: "The capacity to accept or tolerate delay, trouble, or suffering without getting angry.", sentences: ["Teaching young children requires a lot of patience.", "Good things come to those who wait with patience."] },
+            { word: "Perseverance", definition: "Persistence in doing something despite difficulty or delay in achieving success.", sentences: ["Success requires hard work and perseverance.", "Through sheer perseverance, she finished the marathon."] },
+            { word: "Authentic", definition: "Not false or copied; genuine, real, and true to its own personality.", sentences: ["The restaurant serves authentic Italian pizza.", "It is important to remain authentic to yourself."] },
+            { word: "Sovereign", definition: "Possessing supreme or ultimate power and authority over a nation or territory.", sentences: ["The monarch is the official sovereign of the realm.", "The nation declared itself a sovereign state."] },
+            { word: "Eloquent", definition: "Fluent or persuasive in speaking or writing clearly and expressively.", sentences: ["She gave an eloquent speech at the graduation.", "His letters were poetic and highly eloquent."] },
+            { word: "Nostalgia", definition: "A sentimental longing or wistful affection for the past or happy memories.", sentences: ["Old photographs always fill me with nostalgia.", "The music evoked a sense of 90s nostalgia."] },
+
+            // Level 2 Additional Words
+            { word: "Benevolent", definition: "Well-meaning, kindly, and serving a charitable rather than a profit-making purpose.", sentences: ["A benevolent neighbor helped clean the garden.", "The foundation was created by a benevolent donor."] },
+            { word: "Candidate", definition: "A person who applies for a job or is nominated for election.", sentences: ["She is the top candidate for the manager position.", "Each candidate was interviewed by the panel."] },
+            { word: "Diligence", definition: "Careful and persistent work or effort applied to a task.", sentences: ["His diligence paid off when he passed the exam.", "The detective investigated the case with diligence."] },
+            { word: "Enthusiasm", definition: "Intense and eager enjoyment, interest, or approval.", sentences: ["The kids showed great enthusiasm for the trip.", "Her enthusiasm for art was truly contagious."] },
+            { word: "Fascinate", definition: "Attract strong attention and interest of someone immensely.", sentences: ["Space exploration has always fascinated him.", "Ancient history continues to fascinate researchers."] },
+            { word: "Generosity", definition: "The quality of being kind, plentiful, and giving to others.", sentences: ["We were touched by the generosity of our hosts.", "Her generosity helped fund the community shelter."] },
+            { word: "Heritage", definition: "Property, traditions, or culture that are passed down through generations.", sentences: ["The castle is an important part of national heritage.", "They take pride in preserving their cultural heritage."] },
+            { word: "Illuminate", definition: "Make something visible or bright by shining light upon it or clarifying it.", sentences: ["Streetlights illuminate the boulevard at night.", "The professor helped illuminate complex concepts."] },
+            { word: "Jubilant", definition: "Feeling or expressing great happiness, triumph, and success.", sentences: ["The crowd was jubilant after the victory.", "They broke into jubilant cheers when news arrived."] },
+            { word: "Kindle", definition: "Light or set on fire, or inspire an emotion or idea in someone.", sentences: ["He used dry wood to kindle the campfire.", "The book kindled her passion for architecture."] },
+            { word: "Luminous", definition: "Full of or shedding light; bright or shining, especially in the dark.", sentences: ["The watch has luminous hands visible at night.", "Her face looked luminous under the moonlight."] },
+            { word: "Magnificent", definition: "Impressively beautiful, elaborate, or extravagant; striking.", sentences: ["The palace offered a magnificent view of mountains.", "They put on a magnificent theatrical performance."] },
+            { word: "Nuance", definition: "A subtle difference in or shade of meaning, expression, or sound.", sentences: ["There are subtle nuances in her translation.", "He appreciated the nuance of the actor's performance."] },
+            { word: "Obscure", definition: "Not discovered or known about; uncertain or difficult to understand.", sentences: ["The origins of the ancient artifact remain obscure.", "An obscure poet wrote these beautiful lines."] },
+            { word: "Pragmatic", definition: "Dealing with things sensibly and realistically based on practical considerations.", sentences: ["We need a pragmatic solution to this dilemma.", "She took a pragmatic approach to budget planning."] },
+
+            // Level 3+ Expansion Words
+            { word: "Quenching", definition: "Satisfying one's thirst by drinking, or extinguishing a flame.", sentences: ["A cold lemonade is perfect for quenching thirst.", "Firefighters succeeded in quenching the flames."] },
+            { word: "Radiant", definition: "Sending out light or glowing brightly with health and happiness.", sentences: ["The bride looked radiant on her wedding day.", "The sun sent radiant beams through the trees."] },
+            { word: "Serendipity", definition: "The occurrence and development of events by chance in a happy or beneficial way.", sentences: ["Finding this cozy cafe was pure serendipity.", "Scientific discoveries often happen by serendipity."] },
+            { word: "Tranquil", definition: "Free from disturbance, calm, quiet, and peaceful.", sentences: ["The mountain lake was perfectly tranquil at dawn.", "She spent a tranquil afternoon reading by the pool."] },
+            { word: "Ubiquitous", definition: "Present, appearing, or found everywhere at the same time.", sentences: ["Smartphones have become ubiquitous in modern life.", "Coffee shops are ubiquitous in this city."] },
+            { word: "Venerable", definition: "Accorded a great deal of respect, especially because of age, wisdom, or character.", sentences: ["The venerable professor retired after forty years.", "They entered the venerable hall of the cathedral."] },
+            { word: "Whimsical", definition: "Playfully quaint or fanciful, especially in an appealing and amusing way.", sentences: ["The story had a whimsical tone with talking animals.", "She loves wearing whimsical, colorful hats."] },
+            { word: "Xenon", definition: "A chemical element that is a heavy, colorless, odorless noble gas.", sentences: ["Xenon is used in certain high-intensity lamps.", "The discharge tube glowed blue with xenon gas."] },
+            { word: "Yield", definition: "Produce or provide a natural, agricultural, or industrial product.", sentences: ["The fertile soil yields high quality crops.", "This investment strategy yields steady returns."] },
+            { word: "Zealous", definition: "Having or showing great energy, enthusiasm, and devotion to a cause.", sentences: ["He was a zealous supporter of environmental protection.", "The team launched a zealous campaign for reform."] },
+            { word: "Meticulous", definition: "Showing great attention to detail; very careful and precise.", sentences: ["He kept meticulous records of all expenses.", "Her meticulous work ensured the project succeeded."] },
+            { word: "Ephemeral", definition: "Lasting for a very short time; fleeting or temporary.", sentences: ["Fame in digital culture can be ephemeral.", "Spring cherry blossoms offer ephemeral beauty."] },
+            { word: "Tenacious", definition: "Tending to keep a firm hold of something; persistent and stubborn.", sentences: ["The tenacious defense stopped the opponent.", "She is tenacious when pursuing her goals."] },
+            { word: "Pinnacle", definition: "The most successful point or culmination of something.", sentences: ["Reaching the pinnacle of his medical career took decades.", "Winning the gold medal was the pinnacle of her achievement."] },
+            { word: "Voracious", definition: "Wanting or devouring great quantities of food or engaging enthusiastically in an activity.", sentences: ["He is a voracious reader who finishes three books a week.", "The kids had a voracious appetite after swimming."] },
+            { word: "Synergy", definition: "The interaction or cooperation of two or more organizations or agents to produce a combined effect greater than the sum.", sentences: ["The synergy between design and engineering created a great product.", "Team synergy boosted productivity."] },
+            
+            // Extra words for Level 4 (49) & Level 5 (64) support
+            { word: "Aesthetic", definition: "Concerned with beauty or the appreciation of beauty.", sentences: ["The building has a clean, minimalist aesthetic.", "Art appreciation develops aesthetic judgment."] },
+            { word: "Bolster", definition: "Support, strengthen, or build up.", sentences: ["The news helped bolster confidence in the market.", "Pillow used to bolster his injured back."] },
+            { word: "Candor", definition: "The quality of being open, sincere, and honest in expression.", sentences: ["I appreciate your candor regarding this issue.", "Her frank candor refreshed everyone in the meeting."] },
+            { word: "Decipher", definition: "Convert a text written in code, or difficult handwriting, into normal language.", sentences: ["Scholars worked to decipher the ancient inscription.", "I cannot decipher your handwriting on this note."] },
+            { word: "Exuberant", definition: "Filled with or characterized by a lively energy and excitement.", sentences: ["The puppy greeted us with exuberant energy.", "Her exuberant laughter filled the room."] },
+            { word: "Flourish", definition: "Grow or develop in a healthy or vigorous way, especially as the result of a particularly favorable environment.", sentences: ["Plants flourish in warm, humid climates.", "Her art business began to flourish online."] },
+            { word: "Gregarious", definition: "Fond of company; sociable and outgoing.", sentences: ["She is a gregarious person who loves parties.", "Dolphins are gregarious creatures living in pods."] },
+            { word: "Hypothetical", definition: "Supposed but not necessarily real or true; based on a hypothesis.", sentences: ["Let us consider a hypothetical situation.", "His argument was purely hypothetical."] },
+            { word: "Impeccable", definition: "In accordance with the highest standards of propriety; faultless.", sentences: ["Her manners were always impeccable.", "The chef delivered an impeccable five-course meal."] },
+            { word: "Juxtapose", definition: "Place or deal with close together for contrasting effect.", sentences: ["The exhibition juxtaposes modern and traditional art.", "Black and white photos juxtapose light and shade."] },
+            { word: "Kinetic", definition: "Relating to or resulting from motion.", sentences: ["Wind turbines convert kinetic energy into electricity.", "The sculpture is a piece of kinetic art that moves."] },
+            { word: "Lucid", definition: "Expressed clearly; easy to understand, or thinking clearly.", sentences: ["She gave a lucid explanation of quantum physics.", "He was lucid and coherent despite his high fever."] },
+            { word: "Melancholy", definition: "A feeling of pensive sadness, typically with no obvious cause.", sentences: ["The rainy afternoon put him in a melancholy mood.", "Soft piano music evoked a gentle melancholy."] },
+            { word: "Nurture", definition: "Care for and encourage the growth or development of someone or something.", sentences: ["Parents nurture their children with love and guidance.", "The incubator helps nurture startup businesses."] },
+            { word: "Ominous", definition: "Giving the impression that something bad or unpleasant is going to happen.", sentences: ["Dark ominous clouds gathered over the horizon.", "There was an ominous silence in the abandoned house."] },
+            { word: "Placid", definition: "Not easily upset or excited; calm and peaceful.", sentences: ["The horse had a gentle and placid temperament.", "They sailed across the placid waters of the bay."] },
+            { word: "Quandary", definition: "A state of perplexity or uncertainty over what to do in a difficult situation.", sentences: ["She was in a quandary about whether to accept the job offer.", "The unexpected dilemma created a political quandary."] },
+            { word: "Rejuvenate", definition: "Make someone or something look or feel younger, fresher, or more lively.", sentences: ["A weekend at the spa will rejuvenate your body.", "The fresh coat of paint rejuvenated the old house."] },
+            { word: "Scrupulous", definition: "Extremely attentive to details, thorough, and careful to do things correctly.", sentences: ["The accountant kept scrupulous records of all transactions.", "She was scrupulous about hygiene in the kitchen."] },
+            { word: "Trepidation", definition: "A feeling of fear or agitation about something that may happen.", sentences: ["He stepped onto the stage with some trepidation.", "She opened the test results with great trepidation."] },
+            { word: "Uncanny", definition: "Strange or mysterious, especially in an unsettling way.", sentences: ["She has an uncanny ability to predict the future.", "There was an uncanny resemblance between the cousins."] },
+            { word: "Vibrant", definition: "Full of energy and enthusiasm, or bright and striking in color.", sentences: ["The city has a vibrant nightlife and culture.", "She wore a vibrant red dress to the ceremony."] },
+            { word: "Wanderlust", definition: "A strong desire to travel and explore the world.", sentences: ["His wanderlust took him to over fifty countries.", "Reading travel magazines fueled her wanderlust."] },
+            { word: "Yielding", definition: "Complying with the requests or desires of others; flexible or soft.", sentences: ["The soft mattress was comfortable and yielding.", "She gave a yielding smile after the long argument."] },
+            { word: "Zenith", definition: "The time at which something is most powerful or successful.", sentences: ["At the zenith of her career, she won the Nobel Prize.", "The sun reached its zenith in the clear midday sky."] }
+        ];
+
+        /* ==========================================================================
+           2. AUDIO SYNTHESIS & SOUND EFFECTS ENGINE (Web Audio API & Speech Synthesis)
+           ========================================================================== */
+        class AudioEngine {
+            constructor() {
+                this.ctx = null;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContext();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            // Synthesized Card Flip Sound
+            playFlip() {
+                this.init();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.08);
+
+                gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.08);
+            }
+
+            // Synthesized Success Chime
+            playSuccess() {
+                this.init();
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                notes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.06);
+
+                    gain.gain.setValueAtTime(0.2, this.ctx.currentTime + idx * 0.06);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.06 + 0.3);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start(this.ctx.currentTime + idx * 0.06);
+                    osc.stop(this.ctx.currentTime + idx * 0.06 + 0.3);
+                });
+            }
+
+            // Synthesized Explosion Sound (Minesweeper Boom!)
+            playExplosion() {
+                this.init();
+                const bufferSize = this.ctx.sampleRate * 0.8;
+                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+
+                // Pink/White noise generation
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = buffer;
+
+                // Lowpass filter for deep boom effect
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(800, this.ctx.currentTime);
+                filter.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.8);
+
+                const gain = this.ctx.createGain();
+                gain.gain.setValueAtTime(0.8, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.8);
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                noise.start();
+                noise.stop(this.ctx.currentTime + 0.8);
+            }
+
+            // Text To Speech Pronunciation
+            speak(text) {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel(); // Stop any active speech
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'en-US';
+                    utterance.rate = 0.9; // Slightly slower for clarity
+                    window.speechSynthesis.speak(utterance);
+                }
+            }
+        }
+
+        const soundEngine = new AudioEngine();
+
+        /* ==========================================================================
+           3. GAME STATE & CONTROLLER LOGIC
+           ========================================================================== */
+        class VocabSweeperGame {
+            constructor() {
+                // Game Levels Definition (Grid size -> required words)
+                this.levels = [
+                    { level: 1, size: 4, count: 16 },
+                    { level: 2, size: 5, count: 25 },
+                    { level: 3, size: 6, count: 36 },
+                    { level: 4, size: 7, count: 49 },
+                    { level: 5, size: 8, count: 64 }
+                ];
+                this.currentLevelIdx = 0;
+
+                // Vocabulary pool
+                this.wordPool = [];
+                this.gridWords = []; // Active words in current grid
+                this.unrevealedWords = []; // Words still to be guessed
+                this.targetWord = null;
+                this.revealedCount = 0;
+                this.isGameOver = false;
+
+                // Elements
+                this.gridEl = document.getElementById('game-grid');
+                this.targetDefEl = document.getElementById('target-definition');
+                this.levelBadge = document.getElementById('level-badge');
+                this.progressBadge = document.getElementById('progress-badge');
+                this.modalOverlay = document.getElementById('modal-overlay');
+                this.dictCountEl = document.getElementById('dict-count');
+
+                this.loadCustomWords();
+                this.initEvents();
+            }
+
+            // Load user saved words from local storage
+            loadCustomWords() {
+                const stored = localStorage.getItem('vocab_sweeper_custom_words');
+                let customWords = [];
+                if (stored) {
+                    try { customWords = JSON.parse(stored); } catch (e) { customWords = []; }
+                }
+                // Combine default and custom words, removing duplicates by word name
+                const combined = [...DEFAULT_WORDS];
+                customWords.forEach(cw => {
+                    if (!combined.some(w => w.word.toLowerCase() === cw.word.toLowerCase())) {
+                        combined.push(cw);
+                    }
+                });
+                this.wordPool = combined;
+                this.dictCountEl.textContent = `${this.wordPool.length} слів`;
+            }
+
+            saveCustomWord(newWordObj) {
+                const stored = localStorage.getItem('vocab_sweeper_custom_words');
+                let customWords = stored ? JSON.parse(stored) : [];
+                customWords.push(newWordObj);
+                localStorage.setItem('vocab_sweeper_custom_words', JSON.stringify(customWords));
+                
+                // Add to active pool
+                this.wordPool.push(newWordObj);
+                this.dictCountEl.textContent = `${this.wordPool.length} слів`;
+            }
+
+            // Fisher-Yates shuffle algorithm
+            shuffle(array) {
+                const arr = [...array];
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+
+            // Start or Restart Game
+            startLevel(levelIdx = 0) {
+                this.currentLevelIdx = levelIdx;
+                this.isGameOver = false;
+                const levelConfig = this.levels[this.currentLevelIdx];
+
+                // Update UI badges
+                this.levelBadge.textContent = `${levelConfig.level} (${levelConfig.size}x${levelConfig.size})`;
+                this.revealedCount = 0;
+                this.updateProgressBadge();
+
+                // Ensure enough words exist in pool for high levels
+                let pool = [...this.wordPool];
+                while (pool.length < levelConfig.count) {
+                    // Duplicate pool if user hasn't added enough custom words for 8x8 yet
+                    pool = pool.concat(DEFAULT_WORDS);
+                }
+
+                // Pick random words for this grid & shuffle them
+                const shuffledPool = this.shuffle(pool);
+                this.gridWords = shuffledPool.slice(0, levelConfig.count);
+                this.unrevealedWords = [...this.gridWords];
+
+                // Render Grid Layout
+                this.renderGrid(levelConfig.size);
+
+                // Set initial target definition
+                this.pickNextTarget();
+            }
+
+            renderGrid(gridSize) {
+                this.gridEl.innerHTML = '';
+                
+                // Update grid columns CSS class dynamically
+                this.gridEl.className = `grid gap-2 md:gap-3 w-full max-w-4xl transition-all duration-300 grid-${gridSize}`;
+
+                this.gridWords.forEach((wordObj, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card-container h-24 sm:h-28 md:h-32 cursor-pointer';
+                    card.dataset.index = index;
+                    card.dataset.word = wordObj.word;
+
+                    card.innerHTML = `
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <span class="text-sm sm:text-base md:text-lg font-bold text-slate-100 tracking-wide break-all">${wordObj.word}</span>
+                            </div>
+                            <div class="card-back">
+                                <button class="btn-speak mb-1 text-emerald-300 hover:text-white bg-emerald-800/60 p-1.5 rounded-full transition" title="Озвучити слово">
+                                    <i class="fa-solid fa-volume-high text-xs sm:text-sm"></i>
+                                </button>
+                                <div class="text-[10px] sm:text-xs text-slate-100 italic space-y-1 text-left px-1">
+                                    <p class="line-clamp-2">1. "${wordObj.sentences[0] || ''}"</p>
+                                    <p class="line-clamp-2">2. "${wordObj.sentences[1] || ''}"</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    // Card Click Handler
+                    card.addEventListener('click', (e) => {
+                        // Prevent click if speaker icon clicked
+                        if (e.target.closest('.btn-speak')) {
+                            e.stopPropagation();
+                            soundEngine.speak(`${wordObj.word}. Example: ${wordObj.sentences[0]}`);
+                            return;
+                        }
+
+                        this.handleCardClick(card, wordObj);
+                    });
+
+                    this.gridEl.appendChild(card);
+                });
+            }
+
+            pickNextTarget() {
+                if (this.unrevealedWords.length === 0) {
+                    this.handleLevelCompleted();
+                    return;
+                }
+
+                // Pick random unrevealed word
+                const randIdx = Math.floor(Math.random() * this.unrevealedWords.length);
+                this.targetWord = this.unrevealedWords[randIdx];
+
+                // Smooth text change
+                this.targetDefEl.classList.add('opacity-0');
+                setTimeout(() => {
+                    this.targetDefEl.textContent = this.targetWord.definition;
+                    this.targetDefEl.classList.remove('opacity-0');
+                }, 150);
+            }
+
+            handleCardClick(cardEl, clickedWordObj) {
+                if (this.isGameOver || cardEl.classList.contains('flipped')) return;
+
+                // Check if user clicked the CORRECT card matching definition
+                if (clickedWordObj.word === this.targetWord.word) {
+                    // Correct! Flip card
+                    soundEngine.playFlip();
+                    cardEl.classList.add('flipped');
+
+                    // Remove from unrevealed pool
+                    this.unrevealedWords = this.unrevealedWords.filter(w => w.word !== clickedWordObj.word);
+                    this.revealedCount++;
+                    this.updateProgressBadge();
+
+                    // Pick next target
+                    setTimeout(() => {
+                        this.pickNextTarget();
+                    }, 400);
+
+                } else {
+                    // INCORRECT! Trigger Bomb Explosion Game Over
+                    this.handleExplosion();
+                }
+            }
+
+            handleExplosion() {
+                this.isGameOver = true;
+                soundEngine.playExplosion();
+
+                // Apply dynamic scatter animation to all grid cards
+                const cards = this.gridEl.querySelectorAll('.card-container');
+                cards.forEach(card => {
+                    // Random scatter vectors
+                    const x = (Math.random() - 0.5) * 800;
+                    const y = (Math.random() - 0.5) * 800;
+                    const rot = (Math.random() - 0.5) * 720;
+
+                    card.style.setProperty('--tw-translate-x', `${x}px`);
+                    card.style.setProperty('--tw-translate-y', `${y}px`);
+                    card.style.setProperty('--tw-rotate', `${rot}deg`);
+
+                    card.classList.add('exploded');
+                });
+
+                // Show Game Over Modal
+                setTimeout(() => {
+                    this.showModal(
+                        'bg-red-500/20 text-red-400 border-red-500/30',
+                        '<i class="fa-solid fa-bomb"></i>',
+                        'ВИБУХ! ГРА ЗАКІНЧИЛАСЯ',
+                        `Ви обрали неправильне слово "${this.targetWord ? '' : ''}". Картки розлетілися! Спробуйте спочатку.`,
+                        'Розпочати заново',
+                        () => this.startLevel(0)
+                    );
+                }, 800);
+            }
+
+            handleLevelCompleted() {
+                soundEngine.playSuccess();
+                const isLastLevel = this.currentLevelIdx >= this.levels.length - 1;
+
+                if (isLastLevel) {
+                    this.showModal(
+                        'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+                        '<i class="fa-solid fa-trophy"></i>',
+                        'ГРАНДІОЗНА ПЕРЕМОГА!',
+                        'Вітаємо! Ви успішно пройшли всі 5 рівнів складності Vocab Sweeper!',
+                        'Зіграти ще раз',
+                        () => this.startLevel(0)
+                    );
+                } else {
+                    const nextLvl = this.currentLevelIdx + 2;
+                    this.showModal(
+                        'bg-indigo-500/20 text-indigo-400 border-indigo-500/30',
+                        '<i class="fa-solid fa-circle-check"></i>',
+                        `РІВЕНЬ ${this.currentLevelIdx + 1} ПРОЙДЕНО!`,
+                        `Чудова робота! Готові до рівня ${nextLvl} з більшою сіткою слів?`,
+                        `Перейти на рівень ${nextLvl}`,
+                        () => this.startLevel(this.currentLevelIdx + 1)
+                    );
+                }
+            }
+
+            updateProgressBadge() {
+                const total = this.levels[this.currentLevelIdx].count;
+                this.progressBadge.textContent = `${this.revealedCount} / ${total}`;
+            }
+
+            showModal(iconStyle, iconHtml, title, message, btnText, onAction) {
+                const iconEl = document.getElementById('modal-icon');
+                const titleEl = document.getElementById('modal-title');
+                const msgEl = document.getElementById('modal-message');
+                const btnEl = document.getElementById('modal-action-btn');
+
+                iconEl.className = `w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 shadow-xl border ${iconStyle}`;
+                iconEl.innerHTML = iconHtml;
+                titleEl.textContent = title;
+                msgEl.textContent = message;
+                btnEl.textContent = btnText;
+
+                // Action binding
+                btnEl.onclick = () => {
+                    this.hideModal();
+                    onAction();
+                };
+
+                this.modalOverlay.classList.remove('hidden');
+                setTimeout(() => {
+                    this.modalOverlay.classList.remove('opacity-0');
+                    document.getElementById('modal-content').classList.remove('scale-90');
+                }, 10);
+            }
+
+            hideModal() {
+                this.modalOverlay.classList.add('opacity-0');
+                document.getElementById('modal-content').classList.add('scale-90');
+                setTimeout(() => {
+                    this.modalOverlay.classList.add('hidden');
+                }, 300);
+            }
+
+            initEvents() {
+                // Sidebar Toggle Mobile
+                document.getElementById('btn-toggle-sidebar').addEventListener('click', () => {
+                    const sidebar = document.getElementById('sidebar');
+                    sidebar.classList.toggle('hidden');
+                });
+
+                // Manual Reset Button
+                document.getElementById('btn-reset-game').addEventListener('click', () => {
+                    this.startLevel(0);
+                });
+
+                // Add Word Form via Free Dictionary API
+                document.getElementById('add-word-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const inputEl = document.getElementById('input-word');
+                    const btnEl = document.getElementById('btn-submit-word');
+                    const statusEl = document.getElementById('api-status');
+                    const word = inputEl.value.trim();
+
+                    if (!word) return;
+
+                    // UI Loading State
+                    btnEl.disabled = true;
+                    btnEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Пошук...`;
+                    statusEl.className = 'text-xs p-3 rounded-xl mb-4 border bg-slate-900 border-slate-700 text-slate-300 flex items-center gap-2';
+                    statusEl.innerHTML = `<i class="fa-solid fa-cloud-arrow-down text-indigo-400"></i> Завантаження з словника...`;
+                    statusEl.classList.remove('hidden');
+
+                    try {
+                        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+                        if (!response.ok) throw new Error('Слово не знайдено у словнику API.');
+
+                        const data = await response.json();
+                        const entry = data[0];
+
+                        // Extract definition & examples
+                        let definition = "";
+                        let sentences = [];
+
+                        if (entry.meanings && entry.meanings.length > 0) {
+                            for (const meaning of entry.meanings) {
+                                for (const defObj of meaning.definitions) {
+                                    if (!definition && defObj.definition) {
+                                        definition = defObj.definition;
+                                    }
+                                    if (defObj.example && sentences.length < 2) {
+                                        sentences.push(defObj.example);
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!definition) {
+                            definition = `A vocabulary word referring to ${word}.`;
+                        }
+
+                        // Fallback sentences if API didn't return examples
+                        if (sentences.length === 0) {
+                            sentences.push(`The word '${word}' is frequently used in modern English context.`);
+                            sentences.push(`She asked about the true meaning of '${word}'.`);
+                        } else if (sentences.length === 1) {
+                            sentences.push(`Understanding '${word}' helps expand your active vocabulary.`);
+                        }
+
+                        const newWordObj = {
+                            word: entry.word.charAt(0).toUpperCase() + entry.word.slice(1),
+                            definition: definition,
+                            sentences: sentences
+                        };
+
+                        this.saveCustomWord(newWordObj);
+
+                        // Success Feedback
+                        statusEl.className = 'text-xs p-3 rounded-xl mb-4 border bg-emerald-950/80 border-emerald-600/50 text-emerald-300';
+                        statusEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Слово "<b>${newWordObj.word}</b>" успішно додано!`;
+                        inputEl.value = '';
+
+                    } catch (err) {
+                        statusEl.className = 'text-xs p-3 rounded-xl mb-4 border bg-red-950/80 border-red-600/50 text-red-300';
+                        statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Помилка: ${err.message || 'Не вдалося завантажити'}`;
+                    } finally {
+                        btnEl.disabled = false;
+                        btnEl.innerHTML = `<i class="fa-solid fa-cloud-arrow-down"></i> <span>Отримати з словника</span>`;
+                    }
+                });
+            }
+        }
+
+        // Initialize Game on Page Load
+        window.onload = () => {
+            const game = new VocabSweeperGame();
+            game.startLevel(0);
+        };
+    </script>
+</body>
+</html>
