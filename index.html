@@ -352,7 +352,7 @@
         ];
 
         /* ==========================================================================
-           2. SPEECH & AUDIO ENGINE (Synth BGM, Powerful Explosion, Deep Male Bass)
+           2. SPEECH & AUDIO ENGINE (Complex 8-bit Synth BGM Loop, Explosion, Bass)
            ========================================================================== */
         class AudioEngine {
             constructor() {
@@ -398,7 +398,7 @@
                 }
             }
 
-            // 8-bit Synth Synthwave Background Music Loop Generator
+            // Expanded Complex 8-bit Synthwave Background Music Loop
             toggleBGM() {
                 this.init();
                 this.isBgmPlaying = !this.isBgmPlaying;
@@ -415,56 +415,68 @@
             startBGM() {
                 if (this.bgmTimer) clearInterval(this.bgmTimer);
                 
-                // Synthwave Bassline & Synth Melody Frequencies (Hz)
-                const bassline = [110, 110, 130.81, 110, 146.83, 130.81, 110, 98.00];
-                const leadMelody = [440, 0, 523.25, 0, 587.33, 523.25, 440, 392];
-                const bpmTempo = 135;
-                const intervalMs = (60 / bpmTempo) * 1000 / 2; // 8th notes
+                // Rich 32-step melodic bassline & arpeggio sequence
+                const bassline = [
+                    110.00, 0, 110.00, 164.81, 130.81, 0, 130.81, 196.00,
+                    146.83, 0, 146.83, 220.00, 123.47, 0, 98.00,  146.83,
+                    110.00, 0, 110.00, 164.81, 130.81, 0, 130.81, 196.00,
+                    164.81, 196.00, 220.00, 246.94, 261.63, 220.00, 196.00, 164.81
+                ];
+
+                const leadMelody = [
+                    440.00, 523.25, 659.25, 523.25, 587.33, 659.25, 783.99, 659.25,
+                    698.46, 783.99, 880.00, 783.99, 587.33, 523.25, 440.00, 349.23,
+                    440.00, 523.25, 659.25, 880.00, 783.99, 659.25, 587.33, 523.25,
+                    587.33, 659.25, 523.25, 440.00, 392.00, 440.00, 523.25, 440.00
+                ];
+
+                const bpmTempo = 140;
+                const intervalMs = (60 / bpmTempo) * 1000 / 2; // 16th/8th step rhythm
 
                 this.bgmTimer = setInterval(() => {
                     if (!this.isBgmPlaying || !this.ctx) return;
                     const now = this.ctx.currentTime;
+                    const stepIdx = this.bgmStep % bassline.length;
 
-                    // 1. Synth Bass Note (Quiet background volume)
-                    const bassFreq = bassline[this.bgmStep % bassline.length];
+                    // 1. Warm Synth Bass (Sawtooth with lowpass filter)
+                    const bassFreq = bassline[stepIdx];
                     if (bassFreq > 0) {
                         const osc = this.ctx.createOscillator();
                         const gain = this.ctx.createGain();
                         osc.type = 'sawtooth';
                         osc.frequency.setValueAtTime(bassFreq, now);
 
-                        // Lowpass filter for warm retro synth bass
                         const filter = this.ctx.createBiquadFilter();
                         filter.type = 'lowpass';
-                        filter.frequency.setValueAtTime(450, now);
+                        filter.frequency.setValueAtTime(550, now);
 
-                        gain.gain.setValueAtTime(0.04, now); // Very quiet & non-intrusive
-                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+                        gain.gain.setValueAtTime(0.045, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
 
                         osc.connect(filter);
                         filter.connect(gain);
                         gain.connect(this.ctx.destination);
 
                         osc.start(now);
-                        osc.stop(now + 0.18);
+                        osc.stop(now + 0.16);
                     }
 
-                    // 2. Synth Lead Melody (Quiet retro chimes)
-                    const leadFreq = leadMelody[this.bgmStep % leadMelody.length];
+                    // 2. Complex 8-bit Lead Melody (Square wave)
+                    const leadFreq = leadMelody[stepIdx];
                     if (leadFreq > 0) {
                         const oscLead = this.ctx.createOscillator();
                         const gainLead = this.ctx.createGain();
                         oscLead.type = 'square';
                         oscLead.frequency.setValueAtTime(leadFreq, now);
 
-                        gainLead.gain.setValueAtTime(0.02, now); // Very soft volume
-                        gainLead.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                        gainLead.gain.setValueAtTime(0.022, now);
+                        gainLead.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
 
                         oscLead.connect(gainLead);
                         gainLead.connect(this.ctx.destination);
 
                         oscLead.start(now);
-                        oscLead.stop(now + 0.15);
+                        oscLead.stop(now + 0.13);
                     }
 
                     this.bgmStep++;
