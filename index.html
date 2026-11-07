@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vocab Sweeper - Analog Console Edition</title>
+    <title>Angry Teacher - Analog Console Edition</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Space Grotesk & Space Mono -->
@@ -161,14 +161,20 @@
                 </div>
                 <div>
                     <h1 class="font-black text-2xl md:text-3xl tracking-tight text-[#2b2b28] flex items-center gap-2 uppercase">
-                        Vocab Sweeper
+                        Angry Teacher
                     </h1>
                     <p class="text-xs font-bold text-[#5c584e]">MATCH CHANNELS • AVOID DETONATION</p>
                 </div>
             </div>
 
-            <!-- Level Indicator & Score -->
-            <div class="flex items-center space-x-4 mt-2 sm:mt-0">
+            <!-- Level Indicator, Music Toggle & Score -->
+            <div class="flex items-center space-x-3 mt-2 sm:mt-0">
+                <!-- Background Music Toggle Button -->
+                <button id="btn-toggle-bgm" class="bg-[#f4efdf] hover:bg-[#e8e2d0] text-[#2b2b28] border-2 border-[#2b2b28] p-2.5 rounded-xl text-center shadow-[2px_2px_0_0_#2b2b28] transition active:scale-95 flex items-center justify-center gap-1.5 font-mono-retro font-bold text-xs" title="Toggle Background Music">
+                    <i id="bgm-icon" class="fa-solid fa-volume-xmark text-sm text-[#c04838]"></i>
+                    <span id="bgm-text" class="hidden sm:inline">BGM OFF</span>
+                </button>
+
                 <div class="bg-[#d49e35] text-[#2b2b28] border-2 border-[#2b2b28] px-4 py-1.5 rounded-xl text-center shadow-[2px_2px_0_0_#2b2b28]">
                     <span class="text-[10px] font-mono-retro font-bold block uppercase opacity-80">LEVEL</span>
                     <span id="level-badge" class="text-lg font-black font-mono-retro">1 (4x4)</span>
@@ -346,12 +352,15 @@
         ];
 
         /* ==========================================================================
-           2. SPEECH & AUDIO ENGINE (Powerful Explosion, Electronic Click & Deep Male Bass)
+           2. SPEECH & AUDIO ENGINE (Synth BGM, Powerful Explosion, Deep Male Bass)
            ========================================================================== */
         class AudioEngine {
             constructor() {
                 this.ctx = null;
                 this.preferredVoice = null;
+                this.isBgmPlaying = false;
+                this.bgmTimer = null;
+                this.bgmStep = 0;
                 this.initVoices();
             }
 
@@ -386,6 +395,86 @@
                 selectMaleVoice();
                 if (window.speechSynthesis.onvoiceschanged !== undefined) {
                     window.speechSynthesis.onvoiceschanged = selectMaleVoice;
+                }
+            }
+
+            // 8-bit Synth Synthwave Background Music Loop Generator
+            toggleBGM() {
+                this.init();
+                this.isBgmPlaying = !this.isBgmPlaying;
+
+                if (this.isBgmPlaying) {
+                    this.startBGM();
+                } else {
+                    this.stopBGM();
+                }
+
+                return this.isBgmPlaying;
+            }
+
+            startBGM() {
+                if (this.bgmTimer) clearInterval(this.bgmTimer);
+                
+                // Synthwave Bassline & Synth Melody Frequencies (Hz)
+                const bassline = [110, 110, 130.81, 110, 146.83, 130.81, 110, 98.00];
+                const leadMelody = [440, 0, 523.25, 0, 587.33, 523.25, 440, 392];
+                const bpmTempo = 135;
+                const intervalMs = (60 / bpmTempo) * 1000 / 2; // 8th notes
+
+                this.bgmTimer = setInterval(() => {
+                    if (!this.isBgmPlaying || !this.ctx) return;
+                    const now = this.ctx.currentTime;
+
+                    // 1. Synth Bass Note (Quiet background volume)
+                    const bassFreq = bassline[this.bgmStep % bassline.length];
+                    if (bassFreq > 0) {
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(bassFreq, now);
+
+                        // Lowpass filter for warm retro synth bass
+                        const filter = this.ctx.createBiquadFilter();
+                        filter.type = 'lowpass';
+                        filter.frequency.setValueAtTime(450, now);
+
+                        gain.gain.setValueAtTime(0.04, now); // Very quiet & non-intrusive
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+                        osc.connect(filter);
+                        filter.connect(gain);
+                        gain.connect(this.ctx.destination);
+
+                        osc.start(now);
+                        osc.stop(now + 0.18);
+                    }
+
+                    // 2. Synth Lead Melody (Quiet retro chimes)
+                    const leadFreq = leadMelody[this.bgmStep % leadMelody.length];
+                    if (leadFreq > 0) {
+                        const oscLead = this.ctx.createOscillator();
+                        const gainLead = this.ctx.createGain();
+                        oscLead.type = 'square';
+                        oscLead.frequency.setValueAtTime(leadFreq, now);
+
+                        gainLead.gain.setValueAtTime(0.02, now); // Very soft volume
+                        gainLead.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+                        oscLead.connect(gainLead);
+                        gainLead.connect(this.ctx.destination);
+
+                        oscLead.start(now);
+                        oscLead.stop(now + 0.15);
+                    }
+
+                    this.bgmStep++;
+                }, intervalMs);
+            }
+
+            stopBGM() {
+                if (this.bgmTimer) {
+                    clearInterval(this.bgmTimer);
+                    this.bgmTimer = null;
                 }
             }
 
@@ -768,7 +857,7 @@
                         'bg-[#547b4b] text-[#f4efdf] border-[#2b2b28]',
                         '<i class="fa-solid fa-trophy"></i>',
                         'GRAND VICTORY!',
-                        'Congratulations! You successfully completed all 5 difficulty levels of Vocab Sweeper!',
+                        'Congratulations! You successfully completed all 5 difficulty levels of Angry Teacher!',
                         'PLAY AGAIN',
                         () => this.startLevel(0)
                     );
@@ -830,6 +919,24 @@
 
                 document.getElementById('btn-reset-game').addEventListener('click', () => {
                     this.startLevel(0);
+                });
+
+                // Toggle Background Music Button Event
+                const btnToggleBgm = document.getElementById('btn-toggle-bgm');
+                const bgmIcon = document.getElementById('bgm-icon');
+                const bgmText = document.getElementById('bgm-text');
+
+                btnToggleBgm.addEventListener('click', () => {
+                    const isPlaying = soundEngine.toggleBGM();
+                    if (isPlaying) {
+                        bgmIcon.className = "fa-solid fa-volume-high text-sm text-[#3b7080]";
+                        bgmText.textContent = "BGM ON";
+                        btnToggleBgm.classList.add('bg-[#3b7080]/10');
+                    } else {
+                        bgmIcon.className = "fa-solid fa-volume-xmark text-sm text-[#c04838]";
+                        bgmText.textContent = "BGM OFF";
+                        btnToggleBgm.classList.remove('bg-[#3b7080]/10');
+                    }
                 });
 
                 // Target Definition Speaker Button
