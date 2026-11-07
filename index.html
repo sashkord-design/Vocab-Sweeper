@@ -126,30 +126,41 @@
     <header class="max-w-7xl w-full mx-auto bg-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl mb-4 shadow-[6px_6px_0_0_#2b2b28] overflow-hidden">
         <div class="console-stripe w-full"></div>
         <div class="p-4 flex flex-wrap justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <!-- Custom Screaming Mustached Bomb Logo -->
-                <div class="w-12 h-12 bg-[#c04838] text-[#f4efdf] rounded-xl flex items-center justify-center p-1.5 border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] overflow-hidden">
-                    <svg viewBox="0 0 100 100" class="w-full h-full fill-current stroke-[#2b2b28]" style="stroke-width: 6; stroke-linecap: round; stroke-linejoin: round;">
+            <div class="flex items-center space-x-4">
+                <!-- Custom SVG Logo: Red-black bomb head (frameless) -->
+                <div class="w-14 h-14 flex items-center justify-center filter drop-shadow-[2px_2px_0_#2b2b28]">
+                    <svg viewBox="0 0 200 220" class="w-full h-full">
                         <!-- Fuse -->
-                        <path d="M 50 16 C 58 6, 68 12, 74 6" fill="none" stroke="#2b2b28" stroke-width="6" />
-                        <!-- Spark -->
-                        <path d="M 74 6 L 79 2 M 74 6 L 81 9 M 74 6 L 72 0" fill="none" stroke="#d49e35" stroke-width="5" />
-                        <!-- Bomb Cap -->
-                        <rect x="42" y="16" width="16" height="8" rx="2" fill="#2b2b28" />
-                        <!-- Bomb Head Body -->
-                        <circle cx="50" cy="56" r="32" fill="#c04838" />
-                        <!-- Angry Eyes -->
-                        <path d="M 32 44 L 46 48 M 68 44 L 54 48" stroke="#2b2b28" stroke-width="7" />
-                        <circle cx="39" cy="51" r="3" fill="#2b2b28" />
-                        <circle cx="61" cy="51" r="3" fill="#2b2b28" />
-                        <!-- Big Mustache -->
-                        <path d="M 50 64 C 40 56, 26 62, 22 68 C 32 72, 44 68, 50 66 C 56 68, 68 72, 78 68 C 74 62, 60 56, 50 64 Z" fill="#2b2b28" />
-                        <!-- Screaming Open Mouth -->
-                        <ellipse cx="50" cy="74" rx="10" ry="8" fill="#2b2b28" />
+                        <path d="M 120 45 C 135 25, 145 25, 155 15" fill="none" stroke="#2b2b28" stroke-width="10" stroke-linecap="round" />
+                        <!-- Spark / Star -->
+                        <polygon points="155,15 160,0 165,13 180,10 170,22 182,32 167,32 165,47 155,35 142,42 150,28 137,20" fill="#d49e35" stroke="#2b2b28" stroke-width="2" />
+                        <!-- Bomb Cap / Neck -->
+                        <rect x="98" y="42" width="28" height="14" rx="4" fill="#2b2b28" />
+                        <!-- Red Head Base -->
+                        <path d="M 100 52 C 55 52, 45 85, 45 130 C 45 185, 75 205, 100 205 C 125 205, 155 185, 155 130 C 155 85, 145 52, 100 52 Z" fill="#c04838" />
+                        <!-- Bomb Dome Top & Hair Silhouette -->
+                        <path d="M 100 52 C 72 52, 54 70, 48 95 C 60 85, 75 88, 85 96 C 92 88, 100 86, 108 90 C 116 86, 124 88, 131 96 C 140 88, 150 86, 154 95 C 148 70, 128 52, 100 52 Z" fill="#2b2b28" />
+                        <!-- Hair Spikes details -->
+                        <path d="M 68 85 C 75 75, 88 78, 92 86 M 108 86 C 112 78, 125 75, 132 85" fill="none" stroke="#c04838" stroke-width="4" stroke-linecap="round" />
+                        <!-- Ears -->
+                        <path d="M 45 130 C 35 130, 35 150, 47 155" fill="#c04838" stroke="#2b2b28" stroke-width="5" />
+                        <path d="M 155 130 C 165 130, 165 150, 153 155" fill="#c04838" stroke="#2b2b28" stroke-width="5" />
+                        <!-- Eyebrows -->
+                        <path d="M 62 122 C 72 114, 85 118, 90 124" fill="none" stroke="#2b2b28" stroke-width="8" stroke-linecap="round" />
+                        <path d="M 138 122 C 128 114, 115 118, 110 124" fill="none" stroke="#2b2b28" stroke-width="8" stroke-linecap="round" />
+                        <!-- Eyes -->
+                        <ellipse cx="76" cy="132" rx="7" ry="5" fill="#2b2b28" />
+                        <ellipse cx="124" cy="132" rx="7" ry="5" fill="#2b2b28" />
+                        <!-- Nose -->
+                        <path d="M 94 142 C 94 148, 106 148, 106 142" fill="none" stroke="#2b2b28" stroke-width="5" stroke-linecap="round" />
+                        <!-- Iconic Mustache -->
+                        <path d="M 100 152 C 85 145, 60 155, 52 168 C 70 174, 90 166, 100 162 C 110 166, 130 174, 148 168 C 140 155, 115 145, 100 152 Z" fill="#2b2b28" />
+                        <!-- Mouth Line under mustache -->
+                        <path d="M 85 174 C 95 180, 105 180, 115 174" fill="none" stroke="#2b2b28" stroke-width="5" stroke-linecap="round" />
                     </svg>
                 </div>
                 <div>
-                    <h1 class="font-black text-2xl tracking-tight text-[#2b2b28] flex items-center gap-2 uppercase">
+                    <h1 class="font-black text-2xl md:text-3xl tracking-tight text-[#2b2b28] flex items-center gap-2 uppercase">
                         Vocab Sweeper
                     </h1>
                     <p class="text-xs font-bold text-[#5c584e]">MATCH CHANNELS • AVOID DETONATION</p>
@@ -209,7 +220,7 @@
         <aside id="sidebar" class="bg-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl p-5 shadow-[6px_6px_0_0_#2b2b28] flex flex-col justify-between hidden lg:flex space-y-4 flex-1">
             
             <!-- Enlarged Examples Panel -->
-            <div id="examples-panel" class="bg-[#e8e2d0] rounded-2xl p-5 border-2 border-[#2b2b28] shadow-inner flex-1 flex flex-col justify-between min-h-[500px]">
+            <div id="examples-panel" class="bg-[#e8e2d0] rounded-2xl p-5 border-2 border-[#2b2b28] shadow-inner flex-1 flex flex-col justify-between min-h-[520px]">
                 <div class="flex flex-col h-full">
                     <div class="flex items-center justify-between border-b-2 border-[#2b2b28] pb-3 mb-4">
                         <h3 class="font-black text-[#2b2b28] text-base flex items-center gap-2">
@@ -335,7 +346,7 @@
         ];
 
         /* ==========================================================================
-           2. SPEECH & AUDIO ENGINE (Deep Male Bass Voice Settings)
+           2. SPEECH & AUDIO ENGINE (Powerful Explosion, Electronic Click & Deep Male Bass)
            ========================================================================== */
         class AudioEngine {
             constructor() {
@@ -359,7 +370,6 @@
                 
                 const selectMaleVoice = () => {
                     const voices = window.speechSynthesis.getVoices();
-                    // Prioritize deep male English voices across different OS platforms
                     const maleVoice = voices.find(v => 
                         v.lang.startsWith('en') && 
                         (v.name.includes('Male') || v.name.includes('Daniel') || v.name.includes('George') || v.name.includes('David') || v.name.includes('Alex') || v.name.includes('Oliver') || v.name.includes('Google UK English Male'))
@@ -379,9 +389,59 @@
                 }
             }
 
+            // Short pleasant 8-bit electronic chime when picking correct card
+            playCorrectCard() {
+                this.init();
+                const now = this.ctx.currentTime;
+                
+                // Synth Blip 1
+                const osc1 = this.ctx.createOscillator();
+                const gain1 = this.ctx.createGain();
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(523.25, now); // C5
+                osc1.frequency.exponentialRampToValueAtTime(783.99, now + 0.08); // G5
+                gain1.gain.setValueAtTime(0.3, now);
+                gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                osc1.connect(gain1);
+                gain1.connect(this.ctx.destination);
+                osc1.start(now);
+                osc1.stop(now + 0.15);
+
+                // Synth Blip 2 (Harmony)
+                const osc2 = this.ctx.createOscillator();
+                const gain2 = this.ctx.createGain();
+                osc2.type = 'triangle';
+                osc2.frequency.setValueAtTime(1046.50, now + 0.05); // C6
+                gain2.gain.setValueAtTime(0.2, now + 0.05);
+                gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                osc2.connect(gain2);
+                gain2.connect(this.ctx.destination);
+                osc2.start(now + 0.05);
+                osc2.stop(now + 0.2);
+            }
+
+            // Heavy Sub-Bass Enhanced Explosion Sound Effect
             playExplosion() {
                 this.init();
-                const bufferSize = this.ctx.sampleRate * 0.8;
+                const now = this.ctx.currentTime;
+
+                // 1. Sub-Bass Drop Oscillator
+                const subOsc = this.ctx.createOscillator();
+                const subGain = this.ctx.createGain();
+                subOsc.type = 'triangle';
+                subOsc.frequency.setValueAtTime(160, now);
+                subOsc.frequency.exponentialRampToValueAtTime(25, now + 0.9);
+
+                subGain.gain.setValueAtTime(1.0, now);
+                subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+
+                subOsc.connect(subGain);
+                subGain.connect(this.ctx.destination);
+                subOsc.start(now);
+                subOsc.stop(now + 0.9);
+
+                // 2. Heavy Noise Impact
+                const bufferSize = this.ctx.sampleRate * 1.0;
                 const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
                 const data = buffer.getChannelData(0);
 
@@ -394,19 +454,19 @@
 
                 const filter = this.ctx.createBiquadFilter();
                 filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(800, this.ctx.currentTime);
-                filter.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.8);
+                filter.frequency.setValueAtTime(1200, now);
+                filter.frequency.exponentialRampToValueAtTime(20, now + 1.0);
 
-                const gain = this.ctx.createGain();
-                gain.gain.setValueAtTime(0.8, this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.8);
+                const noiseGain = this.ctx.createGain();
+                noiseGain.gain.setValueAtTime(1.0, now);
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 1.0);
 
                 noise.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.ctx.destination);
+                filter.connect(noiseGain);
+                noiseGain.connect(this.ctx.destination);
 
-                noise.start();
-                noise.stop(this.ctx.currentTime + 0.8);
+                noise.start(now);
+                noise.stop(now + 1.0);
             }
 
             playSuccess() {
@@ -444,7 +504,7 @@
 
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'en-US';
-                utterance.rate = 0.88; // Steady male reading pace
+                utterance.rate = 0.88; // Deep male reading pace
                 utterance.pitch = 0.75; // Deep bass tone adjustment
 
                 if (this.preferredVoice) {
@@ -646,6 +706,9 @@
                 }
 
                 if (clickedWordObj.word === this.targetWord.word) {
+                    // Play pleasant electronic click tone
+                    soundEngine.playCorrectCard();
+
                     cardItem.classList.add('correct');
                     const speakBtn = cardItem.querySelector('.btn-card-speak');
                     if (speakBtn) speakBtn.classList.remove('hidden');
