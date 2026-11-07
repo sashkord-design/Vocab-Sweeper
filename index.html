@@ -260,7 +260,6 @@
             <div id="modal-icon" class="w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 shadow-[4px_4px_0_0_#2b2b28] border-3 border-[#2b2b28] bg-[#c04838] text-[#f4efdf]">
                 <i class="fa-solid fa-bomb"></i>
             </div>
-            <!-- Updated Texts as requested -->
             <h2 id="modal-title" class="text-3xl font-black text-[#2b2b28] mb-2 tracking-wide uppercase">BOOM!!!</h2>
             <p id="modal-message" class="text-sm font-mono-retro text-[#5c584e] mb-6 font-bold">One mistake—and you’re a flaming steak.</p>
             <button id="modal-action-btn" class="w-full bg-[#c04838] hover:bg-[#a53b2d] text-[#f4efdf] font-black py-3 px-6 rounded-xl transition transform active:scale-95 shadow-[4px_4px_0_0_#2b2b28] border-3 border-[#2b2b28] uppercase">
@@ -271,87 +270,121 @@
 
     <script>
         /* ==========================================================================
-           1. BUILT-IN VOCABULARY DATABASE (100+ Words with 3 Sentence Examples Each)
+           1. EXPANDED VOCABULARY DATABASE (200 Words Categorized by Difficulty B1->C2)
            ========================================================================== */
-        const DEFAULT_WORDS = [
-            { word: "Ambition", definition: "A strong desire to do or to achieve something, typically requiring determination and hard work.", sentences: ["Her ambition was to become a leading scientist.", "He worked hard to fulfill his career ambitions.", "Without ambition, talent alone rarely leads to success."] },
-            { word: "Resilience", definition: "The capacity to withstand or recover quickly from difficult conditions or toughness.", sentences: ["The team showed great resilience after their initial defeat.", "Children often demonstrate remarkable emotional resilience.", "Building psychological resilience helps people cope with stress."] },
-            { word: "Curiosity", definition: "A strong desire to know or learn something new or unusual.", sentences: ["Her curiosity led her to explore the ancient library.", "Intellectual curiosity is key to personal growth.", "Driven by curiosity, the scientists conducted further experiments."] },
-            { word: "Gratitude", definition: "The quality of being thankful; readiness to show appreciation and return kindness.", sentences: ["He expressed deep gratitude for all their help.", "Practicing daily gratitude improves overall happiness.", "She sent a handwritten letter to show her gratitude."] },
-            { word: "Empathy", definition: "The ability to understand and share the feelings and emotions of another person.", sentences: ["A good leader shows empathy towards team members.", "Empathy helps build stronger human relationships.", "Listening actively is a fundamental component of empathy."] },
-            { word: "Harmony", definition: "The combination of simultaneously sounded musical notes or a state of peaceful agreement.", sentences: ["They lived together in complete peace and harmony.", "The vocal harmonies in this song are beautiful.", "Nature operates in delicate ecological harmony."] },
-            { word: "Integrity", definition: "The quality of being honest and having strong moral principles that you refuse to change.", sentences: ["He is known throughout the company for his integrity.", "Always act with integrity, even when no one is watching.", "Her professional integrity remains unquestioned."] },
-            { word: "Optimism", definition: "Hopefulness and confidence about the future or the success of something.", sentences: ["Her optimism inspired everyone during tough times.", "There is growing optimism about economic recovery.", "He approached the challenging task with boundless optimism."] },
-            { word: "Wisdom", definition: "The quality of having experience, knowledge, and good judgment.", sentences: ["With age often comes true wisdom.", "He shared words of wisdom with his students.", "Seeking wisdom is a lifelong journey."] },
-            { word: "Compassion", definition: "Sympathetic pity and concern for the sufferings or misfortunes of others.", sentences: ["She felt deep compassion for the homeless animals.", "Treating patients with compassion is essential.", "Acts of compassion can transform entire communities."] },
-            { word: "Patience", definition: "The capacity to accept or tolerate delay, trouble, or suffering without getting angry.", sentences: ["Teaching young children requires a lot of patience.", "Good things come to those who wait with patience.", "He lost his patience after waiting in line for two hours."] },
-            { word: "Perseverance", definition: "Persistence in doing something despite difficulty or delay in achieving success.", sentences: ["Success requires hard work and perseverance.", "Through sheer perseverance, she finished the marathon.", "His perseverance was finally rewarded with a promotion."] },
-            { word: "Authentic", definition: "Not false or copied; genuine, real, and true to its own personality.", sentences: ["The restaurant serves authentic Italian pizza.", "It is important to remain authentic to yourself.", "We discovered an authentic vintage painting at the market."] },
-            { word: "Sovereign", definition: "Possessing supreme or ultimate power and authority over a nation or territory.", sentences: ["The monarch is the official sovereign of the realm.", "The nation declared itself a sovereign state.", "Every individual has sovereign control over their own mind."] },
-            { word: "Eloquent", definition: "Fluent or persuasive in speaking or writing clearly and expressively.", sentences: ["She gave an eloquent speech at the graduation.", "His letters were poetic and highly eloquent.", "An eloquent silence settled over the room."] },
-            { word: "Nostalgia", definition: "A sentimental longing or wistful affection for the past or happy memories.", sentences: ["Old photographs always fill me with nostalgia.", "The music evoked a sense of 90s nostalgia.", "A wave of nostalgia hit him when he visited his childhood home."] },
+        const VOCAB_DATABASE = {
+            // Level 1 Pool: B1 (Intermediate / Easy)
+            b1: [
+                { word: "Achieve", definition: "Successfully bring about or reach a desired objective or result by effort.", sentences: ["With dedication, you can achieve your career goals.", "She worked hard to achieve financial independence.", "They managed to achieve great results in a short time."] },
+                { word: "Believe", definition: "Accept something as true, real, or valid without immediate proof.", sentences: ["Always believe in your own hidden capabilities.", "I believe that honesty is the foundation of friendship.", "Many people believe that practice makes perfect."] },
+                { word: "Create", definition: "Bring something new into existence using skill or imagination.", sentences: ["Artists create beauty out of ordinary raw materials.", "The developer planned to create a new mobile game.", "Her main goal was to create a cozy atmosphere."] },
+                { word: "Decide", definition: "Make a final choice or judgment about something after consideration.", sentences: ["Take your time before you decide on your major.", "She couldn't decide which book to read first.", "We must decide on our next strategy today."] },
+                { word: "Explore", definition: "Travel through an unfamiliar area in order to learn about it.", sentences: ["They decided to explore the ancient mountain trail.", "Scientists continue to explore the mysteries of space.", "You should explore different hobbies to find your passion."] },
+                { word: "Future", definition: "A period of time that will come after the present moment.", sentences: ["The future holds endless possibilities for young minds.", "Investing in education ensures a brighter future.", "Nobody can predict the future with absolute certainty."] },
+                { word: "Honest", definition: "Free of deceit, truthful, sincere, and morally upright.", sentences: ["An honest friend will always give you genuine advice.", "He gave an honest answer despite the consequences.", "Her honest nature earned her universal respect."] },
+                { word: "Improve", definition: "Make or become better in quality, condition, or skill.", sentences: ["Daily reading helps improve your English vocabulary.", "He took lessons to improve his public speaking.", "Proper sleep will improve your overall performance."] },
+                { word: "Journey", definition: "An act of traveling from one place to another over a distance.", sentences: ["Life is a long journey full of unexpected turns.", "Their journey across the ocean took two weeks.", "The journey towards wisdom requires patience."] },
+                { word: "Notice", definition: "Become aware of or pay attention to someone or something.", sentences: ["Did you notice the subtle changes in her expression?", "I didn't notice how late it had gotten.", "He was the first to notice the smoke rising."] },
+                { word: "Prepare", definition: "Make something or someone ready for a future event or task.", sentences: ["You must prepare thoroughly for the upcoming exam.", "She spent hours to prepare a delicious dinner.", "Good planning helps you prepare for unexpected challenges."] },
+                { word: "Protect", definition: "Keep safe from harm, injury, damage, or loss.", sentences: ["Parents always strive to protect their children.", "Wearing a helmet helps protect your head while cycling.", "Laws exist to protect individual human rights."] },
+                { word: "Reduce", definition: "Make smaller or less in amount, degree, or size.", sentences: ["Meditation can significantly reduce daily stress.", "We should reduce our consumption of single-use plastic.", "Regular exercise helps reduce the risk of illness."] },
+                { word: "Succeed", definition: "Achieve the desired aim or result in a venture.", sentences: ["Persistence is essential if you want to succeed.", "She worked tirelessly to succeed in business.", "Those who try repeatedly are bound to succeed."] },
+                { word: "Support", definition: "Give assistance, encouragement, or approval to someone.", sentences: ["True friends always support each other in tough times.", "The local community rallied to support the charity.", "My family supported my decision to study abroad."] },
+                { word: "Value", definition: "Consider someone or something to be important, beneficial, or useful.", sentences: ["We should value time more than material wealth.", "She came to value his insightful advice.", "They value creativity and innovation in this company."] },
+                { word: "Advise", definition: "Offer suggestions about the best course of action to someone.", sentences: ["Doctors advise drinking plenty of water daily.", "I advise you to review the contract carefully.", "He advised his friend against making rash choices."] },
+                { word: "Brave", definition: "Ready to face and endure danger, pain, or difficulty with courage.", sentences: ["The brave firefighter rescued the family from the blaze.", "It takes a brave person to stand up for justice.", "She made a brave decision to start over in a new city."] },
+                { word: "Challenge", definition: "A demanding task or situation that tests someone's ability.", sentences: ["Overcoming this obstacle was a tough challenge.", "He accepted the challenge with enthusiasm.", "Every challenge offers a valuable learning experience."] },
+                { word: "Discover", definition: "Find unexpectedly or gain knowledge of something for the first time.", sentences: ["Researchers hope to discover a new cure.", "She was thrilled to discover a hidden vintage shop.", "Traveling allows you to discover new cultures."] },
+                { word: "Encourage", definition: "Give support, confidence, or hope to someone to do something.", sentences: ["Teachers should encourage students to ask questions.", "Her success served to encourage others in the team.", "My parents always encourage my creative pursuits."] },
+                { word: "Forgive", definition: "Stop feeling angry or resentful toward someone for an offense.", sentences: ["Learning to forgive others brings inner peace.", "She chose to forgive his mistake and move on.", "It takes strength to apologize and forgive."] },
+                { word: "Gather", definition: "Bring together or collect people or things from various sources.", sentences: ["The family will gather for the holiday dinner.", "Scientists gather data to support their hypothesis.", "She went outside to gather fresh wild flowers."] },
+                { word: "Imagine", definition: "Form a mental image or concept of something not present to the senses.", sentences: ["Can you imagine living on another planet?", "Artists imagine worlds that do not yet exist.", "Imagine the satisfaction of achieving your dream."] },
+                { word: "Manage", definition: "Be in charge of, run, or handle a situation successfully.", sentences: ["She knows how to manage complex projects.", "He managed to finish the report before the deadline.", "Learning to manage your time effectively is vital."] },
+                { word: "Organize", definition: "Arrange systematic order or structure to elements or activities.", sentences: ["She helped organize the annual school festival.", "Clear files help organize your digital workspace.", "He likes to organize his day starting early morning."] },
+                { word: "Promise", definition: "A declaration that one will definitely do or not do something.", sentences: ["He made a promise to return the borrowed book.", "Always keep a promise once you have given your word.", "Her talent holds great promise for the future."] },
+                { word: "Refuse", definition: "Indicate that one is unwilling to accept, grant, or do something.", sentences: ["I must politely refuse your generous offer.", "He refused to give up despite the hardships.", "She refused to compromise on her core values."] },
+                { word: "Solve", definition: "Find an answer to, explanation for, or means of dealing with a problem.", sentences: ["Puzzles help train your brain to solve problems.", "Together we can solve any complex issue.", "He worked through the night to solve the glitch."] },
+                { word: "Wonder", definition: "A feeling of amazement and admiration, or a desire to know something.", sentences: ["I wonder what the weather will be like tomorrow.", "The child looked at the starry sky with wonder.", "It is no wonder she won the first prize."] }
+            ],
 
-            { word: "Benevolent", definition: "Well-meaning, kindly, and serving a charitable rather than a profit-making purpose.", sentences: ["A benevolent neighbor helped clean the garden.", "The foundation was created by a benevolent donor.", "His benevolent smile put the nervous child at ease."] },
-            { word: "Candidate", definition: "A person who applies for a job or is nominated for election.", sentences: ["She is the top candidate for the manager position.", "Each candidate was interviewed by the panel.", "The political candidate delivered a persuasive speech."] },
-            { word: "Diligence", definition: "Careful and persistent work or effort applied to a task.", sentences: ["His diligence paid off when he passed the exam.", "The detective investigated the case with diligence.", "Diligence is a key ingredient in achieving long-term success."] },
-            { word: "Enthusiasm", definition: "Intense and eager enjoyment, interest, or approval.", sentences: ["The kids showed great enthusiasm for the trip.", "Her enthusiasm for art was truly contagious.", "He greeted the new proposal with immense enthusiasm."] },
-            { word: "Fascinate", definition: "Attract strong attention and interest of someone immensely.", sentences: ["Space exploration has always fascinated him.", "Ancient history continues to fascinate researchers.", "The intricate patterns of nature never fail to fascinate."] },
-            { word: "Generosity", definition: "The quality of being kind, plentiful, and giving to others.", sentences: ["We were touched by the generosity of our hosts.", "Her generosity helped fund the community shelter.", "True generosity requires giving without expecting anything back."] },
-            { word: "Heritage", definition: "Property, traditions, or culture that are passed down through generations.", sentences: ["The castle is an important part of national heritage.", "They take pride in preserving their cultural heritage.", "Architectural heritage must be protected from modern demolition."] },
-            { word: "Illuminate", definition: "Make something visible or bright by shining light upon it or clarifying it.", sentences: ["Streetlights illuminate the boulevard at night.", "The professor helped illuminate complex concepts.", "The fireworks illuminated the night sky."] },
-            { word: "Jubilant", definition: "Feeling or expressing great happiness, triumph, and success.", sentences: ["The crowd was jubilant after the victory.", "They broke into jubilant cheers when news arrived.", "The team celebrated their jubilant championship win."] },
-            { word: "Kindle", definition: "Light or set on fire, or inspire an emotion or idea in someone.", sentences: ["He used dry wood to kindle the campfire.", "The book kindled her passion for architecture.", "Her words kindled hope in the hearts of the listeners."] },
-            { word: "Luminous", definition: "Full of or shedding light; bright or shining, especially in the dark.", sentences: ["The watch has luminous hands visible at night.", "Her face looked luminous under the moonlight.", "Deep-sea creatures often produce luminous signals."] },
-            { word: "Magnificent", definition: "Impressively beautiful, elaborate, or extravagant; striking.", sentences: ["The palace offered a magnificent view of mountains.", "They put on a magnificent theatrical performance.", "The cathedral features magnificent stained-glass windows."] },
-            { word: "Nuance", definition: "A subtle difference in or shade of meaning, expression, or sound.", sentences: ["There are subtle nuances in her translation.", "He appreciated the nuance of the actor's performance.", "A diplomat must understand the nuances of international relations."] },
-            { word: "Obscure", definition: "Not discovered or known about; uncertain or difficult to understand.", sentences: ["The origins of the ancient artifact remain obscure.", "An obscure poet wrote these beautiful lines.", "Heavy fog made the road signs completely obscure."] },
-            { word: "Pragmatic", definition: "Dealing with things sensibly and realistically based on practical considerations.", sentences: ["We need a pragmatic solution to this dilemma.", "She took a pragmatic approach to budget planning.", "His pragmatic thinking helped avoid costly mistakes."] },
-
-            { word: "Quenching", definition: "Satisfying one's thirst by drinking, or extinguishing a flame.", sentences: ["A cold lemonade is perfect for quenching thirst.", "Firefighters succeeded in quenching the flames.", "Water is essential for quenching thermal energy."] },
-            { word: "Radiant", definition: "Sending out light or glowing brightly with health and happiness.", sentences: ["The bride looked radiant on her wedding day.", "The sun sent radiant beams through the trees.", "Her radiant smile warmed the whole room."] },
-            { word: "Serendipity", definition: "The occurrence and development of events by chance in a happy or beneficial way.", sentences: ["Finding this cozy cafe was pure serendipity.", "Scientific discoveries often happen by serendipity.", "They met through a stroke of unexpected serendipity."] },
-            { word: "Tranquil", definition: "Free from disturbance, calm, quiet, and peaceful.", sentences: ["The mountain lake was perfectly tranquil at dawn.", "She spent a tranquil afternoon reading by the pool.", "A tranquil atmosphere helps clear the mind."] },
-            { word: "Ubiquitous", definition: "Present, appearing, or found everywhere at the same time.", sentences: ["Smartphones have become ubiquitous in modern life.", "Coffee shops are ubiquitous in this city.", "Digital cameras were once ubiquitous before smartphones."] },
-            { word: "Venerable", definition: "Accorded a great deal of respect, especially because of age, wisdom, or character.", sentences: ["The venerable professor retired after forty years.", "They entered the venerable hall of the cathedral.", "The company was founded by a venerable pioneer."] },
-            { word: "Whimsical", definition: "Playfully quaint or fanciful, especially in an appealing and amusing way.", sentences: ["The story had a whimsical tone with talking animals.", "She loves wearing whimsical, colorful hats.", "The illustrator created a whimsical world of magic."] },
-            { word: "Yield", definition: "Produce or provide a natural, agricultural, or industrial product.", sentences: ["The fertile soil yields high quality crops.", "This investment strategy yields steady returns.", "The negotiation finally yielded a positive compromise."] },
-            { word: "Zealous", definition: "Having or showing great energy, enthusiasm, and devotion to a cause.", sentences: ["He was a zealous supporter of environmental protection.", "The team launched a zealous campaign for reform.", "Her zealous dedication inspired everyone on the project."] },
-            { word: "Meticulous", definition: "Showing great attention to detail; very careful and precise.", sentences: ["He kept meticulous records of all expenses.", "Her meticulous work ensured the project succeeded.", "Restoring the old painting required meticulous care."] },
-            { word: "Ephemeral", definition: "Lasting for a very short time; fleeting or temporary.", sentences: ["Fame in digital culture can be ephemeral.", "Spring cherry blossoms offer ephemeral beauty.", "Human life is often compared to an ephemeral shadow."] },
-            { word: "Tenacious", definition: "Tending to keep a firm hold of something; persistent and stubborn.", sentences: ["The tenacious defense stopped the opponent.", "She is tenacious when pursuing her goals.", "Despite difficulties, his tenacious spirit kept him going."] },
-            { word: "Pinnacle", definition: "The most successful point or culmination of something.", sentences: ["Reaching the pinnacle of his medical career took decades.", "Winning the gold medal was the pinnacle of her achievement.", "The mountain peak represented the physical pinnacle of their expedition."] },
-            { word: "Voracious", definition: "Wanting or devouring great quantities of food or engaging enthusiastically in an activity.", sentences: ["He is a voracious reader who finishes three books a week.", "The kids had a voracious appetite after swimming.", "Her voracious curiosity pushed her to explore new topics."] },
-            { word: "Synergy", definition: "The interaction of two or more agents to produce a combined effect greater than the sum.", sentences: ["The synergy between design and engineering created a great product.", "Team synergy boosted overall productivity.", "Combining our talents created an incredible synergy."] },
-            
-            { word: "Aesthetic", definition: "Concerned with beauty or the appreciation of beauty.", sentences: ["The building has a clean, minimalist aesthetic.", "Art appreciation develops aesthetic judgment.", "The interior design combines functional and aesthetic qualities."] },
-            { word: "Bolster", definition: "Support, strengthen, or build up.", sentences: ["The news helped bolster confidence in the market.", "Pillow used to bolster his injured back.", "Additional evidence served to bolster their argument."] },
-            { word: "Candor", definition: "The quality of being open, sincere, and honest in expression.", sentences: ["I appreciate your candor regarding this issue.", "Her frank candor refreshed everyone in the meeting.", "He spoke with utmost candor about his past mistakes."] },
-            { word: "Decipher", definition: "Convert a text written in code, or difficult handwriting, into normal language.", sentences: ["Scholars worked to decipher the ancient inscription.", "I cannot decipher your handwriting on this note.", "Codebreakers managed to decipher the secret signal."] },
-            { word: "Exuberant", definition: "Filled with or characterized by a lively energy and excitement.", sentences: ["The puppy greeted us with exuberant energy.", "Her exuberant laughter filled the room.", "The crowd delivered an exuberant round of applause."] },
-            { word: "Flourish", definition: "Grow or develop in a healthy or vigorous way.", sentences: ["Plants flourish in warm, humid climates.", "Her art business began to flourish online.", "Culture tends to flourish in peaceful societies."] },
-            { word: "Gregarious", definition: "Fond of company; sociable and outgoing.", sentences: ["She is a gregarious person who loves parties.", "Dolphins are gregarious creatures living in pods.", "His gregarious nature makes him popular everywhere."] },
-            { word: "Hypothetical", definition: "Supposed but not necessarily real or true; based on a hypothesis.", sentences: ["Let us consider a hypothetical situation.", "His argument was purely hypothetical.", "The scientist tested several hypothetical scenarios."] },
-            { word: "Impeccable", definition: "In accordance with the highest standards; faultless.", sentences: ["Her manners were always impeccable.", "The chef delivered an impeccable five-course meal.", "His English pronunciation is impeccable."] },
-            { word: "Juxtapose", definition: "Place or deal with close together for contrasting effect.", sentences: ["The exhibition juxtaposes modern and traditional art.", "Black and white photos juxtapose light and shade.", "The author juxtaposes poverty and wealth in the novel."] },
-            { word: "Kinetic", definition: "Relating to or resulting from motion.", sentences: ["Wind turbines convert kinetic energy into electricity.", "The sculpture is a piece of kinetic art that moves.", "The movie is packed with kinetic action sequences."] },
-            { word: "Lucid", definition: "Expressed clearly; easy to understand, or thinking clearly.", sentences: ["She gave a lucid explanation of quantum physics.", "He was lucid and coherent despite his high fever.", "Clear thinking leads to lucid decision-making."] },
-            { word: "Melancholy", definition: "A feeling of pensive sadness, typically with no obvious cause.", sentences: ["The rainy afternoon put him in a melancholy mood.", "Soft piano music evoked a gentle melancholy.", "A sense of melancholy pervades the film."] },
-            { word: "Nurture", definition: "Care for and encourage the growth or development of someone or something.", sentences: ["Parents nurture their children with love and guidance.", "The incubator helps nurture startup businesses.", "We must nurture talent wherever we find it."] },
-            { word: "Ominous", definition: "Giving the impression that something bad or unpleasant is going to happen.", sentences: ["Dark ominous clouds gathered over the horizon.", "There was an ominous silence in the abandoned house.", "The thunder sounded like an ominous warning."] },
-            { word: "Placid", definition: "Not easily upset or excited; calm and peaceful.", sentences: ["The horse had a gentle and placid temperament.", "They sailed across the placid waters of the bay.", "She maintained a placid expression despite the noise."] },
-            { word: "Quandary", definition: "A state of perplexity or uncertainty over what to do in a difficult situation.", sentences: ["She was in a quandary about whether to accept the job offer.", "The unexpected dilemma created a political quandary.", "He found himself in a financial quandary."] },
-            { word: "Rejuvenate", definition: "Make someone or something look or feel younger, fresher, or more lively.", sentences: ["A weekend at the spa will rejuvenate your body.", "The fresh coat of paint rejuvenated the old house.", "Exercise can rejuvenate both mind and body."] },
-            { word: "Scrupulous", definition: "Extremely attentive to details, thorough, and careful to do things correctly.", sentences: ["The accountant kept scrupulous records of all transactions.", "She was scrupulous about hygiene in the kitchen.", "He showed scrupulous honesty in business."] },
-            { word: "Trepidation", definition: "A feeling of fear or agitation about something that may happen.", sentences: ["He stepped onto the stage with some trepidation.", "She opened the test results with great trepidation.", "Entering the dark cave filled them with trepidation."] },
-            { word: "Uncanny", definition: "Strange or mysterious, especially in an unsettling way.", sentences: ["She has an uncanny ability to predict the future.", "There was an uncanny resemblance between the cousins.", "An uncanny quiet fell over the woods."] },
-            { word: "Vibrant", definition: "Full of energy and enthusiasm, or bright and striking in color.", sentences: ["The city has a vibrant nightlife and culture.", "She wore a vibrant red dress to the ceremony.", "The painting features vibrant shades of blue."] },
-            { word: "Wanderlust", definition: "A strong desire to travel and explore the world.", sentences: ["His wanderlust took him to over fifty countries.", "Reading travel magazines fueled her wanderlust.", "Unstoppable wanderlust kept her moving from city to city."] },
-            { word: "Yielding", definition: "Complying with requests; flexible or soft.", sentences: ["The soft mattress was comfortable and yielding.", "She gave a yielding smile after the long argument.", "The soil was soft and yielding underfoot."] },
-            { word: "Zenith", definition: "The time at which something is most powerful or successful.", sentences: ["At the zenith of her career, she won the Nobel Prize.", "The sun reached its zenith in the clear midday sky.", "The empire reached its zenith in the second century."] }
-        ];
+            // Level 2-5 Pool: B2, C1, C2 (Upper-Intermediate to Advanced)
+            advanced: [
+                { word: "Ambition", definition: "A strong desire to do or to achieve something, typically requiring determination and hard work.", sentences: ["Her ambition was to become a leading scientist.", "He worked hard to fulfill his career ambitions.", "Without ambition, talent alone rarely leads to success."] },
+                { word: "Resilience", definition: "The capacity to withstand or recover quickly from difficult conditions or toughness.", sentences: ["The team showed great resilience after their initial defeat.", "Children often demonstrate remarkable emotional resilience.", "Building psychological resilience helps people cope with stress."] },
+                { word: "Curiosity", definition: "A strong desire to know or learn something new or unusual.", sentences: ["Her curiosity led her to explore the ancient library.", "Intellectual curiosity is key to personal growth.", "Driven by curiosity, the scientists conducted further experiments."] },
+                { word: "Gratitude", definition: "The quality of being thankful; readiness to show appreciation and return kindness.", sentences: ["He expressed deep gratitude for all their help.", "Practicing daily gratitude improves overall happiness.", "She sent a handwritten letter to show her gratitude."] },
+                { word: "Empathy", definition: "The ability to understand and share the feelings and emotions of another person.", sentences: ["A good leader shows empathy towards team members.", "Empathy helps build stronger human relationships.", "Listening actively is a fundamental component of empathy."] },
+                { word: "Harmony", definition: "The combination of simultaneously sounded musical notes or a state of peaceful agreement.", sentences: ["They lived together in complete peace and harmony.", "The vocal harmonies in this song are beautiful.", "Nature operates in delicate ecological harmony."] },
+                { word: "Integrity", definition: "The quality of being honest and having strong moral principles that you refuse to change.", sentences: ["He is known throughout the company for his integrity.", "Always act with integrity, even when no one is watching.", "Her professional integrity remains unquestioned."] },
+                { word: "Optimism", definition: "Hopefulness and confidence about the future or the success of something.", sentences: ["Her optimism inspired everyone during tough times.", "There is growing optimism about economic recovery.", "He approached the challenging task with boundless optimism."] },
+                { word: "Wisdom", definition: "The quality of having experience, knowledge, and good judgment.", sentences: ["With age often comes true wisdom.", "He shared words of wisdom with his students.", "Seeking wisdom is a lifelong journey."] },
+                { word: "Compassion", definition: "Sympathetic pity and concern for the sufferings or misfortunes of others.", sentences: ["She felt deep compassion for the homeless animals.", "Treating patients with compassion is essential.", "Acts of compassion can transform entire communities."] },
+                { word: "Patience", definition: "The capacity to accept or tolerate delay, trouble, or suffering without getting angry.", sentences: ["Teaching young children requires a lot of patience.", "Good things come to those who wait with patience.", "He lost his patience after waiting in line for two hours."] },
+                { word: "Perseverance", definition: "Persistence in doing something despite difficulty or delay in achieving success.", sentences: ["Success requires hard work and perseverance.", "Through sheer perseverance, she finished the marathon.", "His perseverance was finally rewarded with a promotion."] },
+                { word: "Authentic", definition: "Not false or copied; genuine, real, and true to its own personality.", sentences: ["The restaurant serves authentic Italian pizza.", "It is important to remain authentic to yourself.", "We discovered an authentic vintage painting at the market."] },
+                { word: "Sovereign", definition: "Possessing supreme or ultimate power and authority over a nation or territory.", sentences: ["The monarch is the official sovereign of the realm.", "The nation declared itself a sovereign state.", "Every individual has sovereign control over their own mind."] },
+                { word: "Eloquent", definition: "Fluent or persuasive in speaking or writing clearly and expressively.", sentences: ["She gave an eloquent speech at the graduation.", "His letters were poetic and highly eloquent.", "An eloquent silence settled over the room."] },
+                { word: "Nostalgia", definition: "A sentimental longing or wistful affection for the past or happy memories.", sentences: ["Old photographs always fill me with nostalgia.", "The music evoked a sense of 90s nostalgia.", "A wave of nostalgia hit him when he visited his childhood home."] },
+                { word: "Benevolent", definition: "Well-meaning, kindly, and serving a charitable rather than a profit-making purpose.", sentences: ["A benevolent neighbor helped clean the garden.", "The foundation was created by a benevolent donor.", "His benevolent smile put the nervous child at ease."] },
+                { word: "Candidate", definition: "A person who applies for a job or is nominated for election.", sentences: ["She is the top candidate for the manager position.", "Each candidate was interviewed by the panel.", "The political candidate delivered a persuasive speech."] },
+                { word: "Diligence", definition: "Careful and persistent work or effort applied to a task.", sentences: ["His diligence paid off when he passed the exam.", "The detective investigated the case with diligence.", "Diligence is a key ingredient in achieving long-term success."] },
+                { word: "Enthusiasm", definition: "Intense and eager enjoyment, interest, or approval.", sentences: ["The kids showed great enthusiasm for the trip.", "Her enthusiasm for art was truly contagious.", "He greeted the new proposal with immense enthusiasm."] },
+                { word: "Fascinate", definition: "Attract strong attention and interest of someone immensely.", sentences: ["Space exploration has always fascinated him.", "Ancient history continues to fascinate researchers.", "The intricate patterns of nature never fail to fascinate."] },
+                { word: "Generosity", definition: "The quality of being kind, plentiful, and giving to others.", sentences: ["We were touched by the generosity of our hosts.", "Her generosity helped fund the community shelter.", "True generosity requires giving without expecting anything back."] },
+                { word: "Heritage", definition: "Property, traditions, or culture that are passed down through generations.", sentences: ["The castle is an important part of national heritage.", "They take pride in preserving their cultural heritage.", "Architectural heritage must be protected from modern demolition."] },
+                { word: "Illuminate", definition: "Make something visible or bright by shining light upon it or clarifying it.", sentences: ["Streetlights illuminate the boulevard at night.", "The professor helped illuminate complex concepts.", "The fireworks illuminated the night sky."] },
+                { word: "Jubilant", definition: "Feeling or expressing great happiness, triumph, and success.", sentences: ["The crowd was jubilant after the victory.", "They broke into jubilant cheers when news arrived.", "The team celebrated their jubilant championship win."] },
+                { word: "Kindle", definition: "Light or set on fire, or inspire an emotion or idea in someone.", sentences: ["He used dry wood to kindle the campfire.", "The book kindled her passion for architecture.", "Her words kindled hope in the hearts of the listeners."] },
+                { word: "Luminous", definition: "Full of or shedding light; bright or shining, especially in the dark.", sentences: ["The watch has luminous hands visible at night.", "Her face looked luminous under the moonlight.", "Deep-sea creatures often produce luminous signals."] },
+                { word: "Magnificent", definition: "Impressively beautiful, elaborate, or extravagant; striking.", sentences: ["The palace offered a magnificent view of mountains.", "They put on a magnificent theatrical performance.", "The cathedral features magnificent stained-glass windows."] },
+                { word: "Nuance", definition: "A subtle difference in or shade of meaning, expression, or sound.", sentences: ["There are subtle nuances in her translation.", "He appreciated the nuance of the actor's performance.", "A diplomat must understand the nuances of international relations."] },
+                { word: "Obscure", definition: "Not discovered or known about; uncertain or difficult to understand.", sentences: ["The origins of the ancient artifact remain obscure.", "An obscure poet wrote these beautiful lines.", "Heavy fog made the road signs completely obscure."] },
+                { word: "Pragmatic", definition: "Dealing with things sensibly and realistically based on practical considerations.", sentences: ["We need a pragmatic solution to this dilemma.", "She took a pragmatic approach to budget planning.", "His pragmatic thinking helped avoid costly mistakes."] },
+                { word: "Quenching", definition: "Satisfying one's thirst by drinking, or extinguishing a flame.", sentences: ["A cold lemonade is perfect for quenching thirst.", "Firefighters succeeded in quenching the flames.", "Water is essential for quenching thermal energy."] },
+                { word: "Radiant", definition: "Sending out light or glowing brightly with health and happiness.", sentences: ["The bride looked radiant on her wedding day.", "The sun sent radiant beams through the trees.", "Her radiant smile warmed the whole room."] },
+                { word: "Serendipity", definition: "The occurrence and development of events by chance in a happy or beneficial way.", sentences: ["Finding this cozy cafe was pure serendipity.", "Scientific discoveries often happen by serendipity.", "They met through a stroke of unexpected serendipity."] },
+                { word: "Tranquil", definition: "Free from disturbance, calm, quiet, and peaceful.", sentences: ["The mountain lake was perfectly tranquil at dawn.", "She spent a tranquil afternoon reading by the pool.", "A tranquil atmosphere helps clear the mind."] },
+                { word: "Ubiquitous", definition: "Present, appearing, or found everywhere at the same time.", sentences: ["Smartphones have become ubiquitous in modern life.", "Coffee shops are ubiquitous in this city.", "Digital cameras were once ubiquitous before smartphones."] },
+                { word: "Venerable", definition: "Accorded a great deal of respect, especially because of age, wisdom, or character.", sentences: ["The venerable professor retired after forty years.", "They entered the venerable hall of the cathedral.", "The company was founded by a venerable pioneer."] },
+                { word: "Whimsical", definition: "Playfully quaint or fanciful, especially in an appealing and amusing way.", sentences: ["The story had a whimsical tone with talking animals.", "She loves wearing whimsical, colorful hats.", "The illustrator created a whimsical world of magic."] },
+                { word: "Yield", definition: "Produce or provide a natural, agricultural, or industrial product.", sentences: ["The fertile soil yields high quality crops.", "This investment strategy yields steady returns.", "The negotiation finally yielded a positive compromise."] },
+                { word: "Zealous", definition: "Having or showing great energy, enthusiasm, and devotion to a cause.", sentences: ["He was a zealous supporter of environmental protection.", "The team launched a zealous campaign for reform.", "Her zealous dedication inspired everyone on the project."] },
+                { word: "Meticulous", definition: "Showing great attention to detail; very careful and precise.", sentences: ["He kept meticulous records of all expenses.", "Her meticulous work ensured the project succeeded.", "Restoring the old painting required meticulous care."] },
+                { word: "Ephemeral", definition: "Lasting for a very short time; fleeting or temporary.", sentences: ["Fame in digital culture can be ephemeral.", "Spring cherry blossoms offer ephemeral beauty.", "Human life is often compared to an ephemeral shadow."] },
+                { word: "Tenacious", definition: "Tending to keep a firm hold of something; persistent and stubborn.", sentences: ["The tenacious defense stopped the opponent.", "She is tenacious when pursuing her goals.", "Despite difficulties, his tenacious spirit kept him going."] },
+                { word: "Pinnacle", definition: "The most successful point or culmination of something.", sentences: ["Reaching the pinnacle of his medical career took decades.", "Winning the gold medal was the pinnacle of her achievement.", "The mountain peak represented the physical pinnacle of their expedition."] },
+                { word: "Voracious", definition: "Wanting or devouring great quantities of food or engaging enthusiastically in an activity.", sentences: ["He is a voracious reader who finishes three books a week.", "The kids had a voracious appetite after swimming.", "Her voracious curiosity pushed her to explore new topics."] },
+                { word: "Synergy", definition: "The interaction of two or more agents to produce a combined effect greater than the sum.", sentences: ["The synergy between design and engineering created a great product.", "Team synergy boosted overall productivity.", "Combining our talents created an incredible synergy."] },
+                { word: "Aesthetic", definition: "Concerned with beauty or the appreciation of beauty.", sentences: ["The building has a clean, minimalist aesthetic.", "Art appreciation develops aesthetic judgment.", "The interior design combines functional and aesthetic qualities."] },
+                { word: "Bolster", definition: "Support, strengthen, or build up.", sentences: ["The news helped bolster confidence in the market.", "Pillow used to bolster his injured back.", "Additional evidence served to bolster their argument."] },
+                { word: "Candor", definition: "The quality of being open, sincere, and honest in expression.", sentences: ["I appreciate your candor regarding this issue.", "Her frank candor refreshed everyone in the meeting.", "He spoke with utmost candor about his past mistakes."] },
+                { word: "Decipher", definition: "Convert a text written in code, or difficult handwriting, into normal language.", sentences: ["Scholars worked to decipher the ancient inscription.", "I cannot decipher your handwriting on this note.", "Codebreakers managed to decipher the secret signal."] },
+                { word: "Exuberant", definition: "Filled with or characterized by a lively energy and excitement.", sentences: ["The puppy greeted us with exuberant energy.", "Her exuberant laughter filled the room.", "The crowd delivered an exuberant round of applause."] },
+                { word: "Flourish", definition: "Grow or develop in a healthy or vigorous way.", sentences: ["Plants flourish in warm, humid climates.", "Her art business began to flourish online.", "Culture tends to flourish in peaceful societies."] },
+                { word: "Gregarious", definition: "Fond of company; sociable and outgoing.", sentences: ["She is a gregarious person who loves parties.", "Dolphins are gregarious creatures living in pods.", "His gregarious nature makes him popular everywhere."] },
+                { word: "Hypothetical", definition: "Supposed but not necessarily real or true; based on a hypothesis.", sentences: ["Let us consider a hypothetical situation.", "His argument was purely hypothetical.", "The scientist tested several hypothetical scenarios."] },
+                { word: "Impeccable", definition: "In accordance with the highest standards; faultless.", sentences: ["Her manners were always impeccable.", "The chef delivered an impeccable five-course meal.", "His English pronunciation is impeccable."] },
+                { word: "Juxtapose", definition: "Place or deal with close together for contrasting effect.", sentences: ["The exhibition juxtaposes modern and traditional art.", "Black and white photos juxtapose light and shade.", "The author juxtaposes poverty and wealth in the novel."] },
+                { word: "Kinetic", definition: "Relating to or resulting from motion.", sentences: ["Wind turbines convert kinetic energy into electricity.", "The sculpture is a piece of kinetic art that moves.", "The movie is packed with kinetic action sequences."] },
+                { word: "Lucid", definition: "Expressed clearly; easy to understand, or thinking clearly.", sentences: ["She gave a lucid explanation of quantum physics.", "He was lucid and coherent despite his high fever.", "Clear thinking leads to lucid decision-making."] },
+                { word: "Melancholy", definition: "A feeling of pensive sadness, typically with no obvious cause.", sentences: ["The rainy afternoon put him in a melancholy mood.", "Soft piano music evoked a gentle melancholy.", "A sense of melancholy pervades the film."] },
+                { word: "Nurture", definition: "Care for and encourage the growth or development of someone or something.", sentences: ["Parents nurture their children with love and guidance.", "The incubator helps nurture startup businesses.", "We must nurture talent wherever we find it."] },
+                { word: "Ominous", definition: "Giving the impression that something bad or unpleasant is going to happen.", sentences: ["Dark ominous clouds gathered over the horizon.", "There was an ominous silence in the abandoned house.", "The thunder sounded like an ominous warning."] },
+                { word: "Placid", definition: "Not easily upset or excited; calm and peaceful.", sentences: ["The horse had a gentle and placid temperament.", "They sailed across the placid waters of the bay.", "She maintained a placid expression despite the noise."] },
+                { word: "Quandary", definition: "A state of perplexity or uncertainty over what to do in a difficult situation.", sentences: ["She was in a quandary about whether to accept the job offer.", "The unexpected dilemma created a political quandary.", "He found himself in a financial quandary."] },
+                { word: "Rejuvenate", definition: "Make someone or something look or feel younger, fresher, or more lively.", sentences: ["A weekend at the spa will rejuvenate your body.", "The fresh coat of paint rejuvenated the old house.", "Exercise can rejuvenate both mind and body."] },
+                { word: "Scrupulous", definition: "Extremely attentive to details, thorough, and careful to do things correctly.", sentences: ["The accountant kept scrupulous records of all transactions.", "She was scrupulous about hygiene in the kitchen.", "He showed scrupulous honesty in business."] },
+                { word: "Trepidation", definition: "A feeling of fear or agitation about something that may happen.", sentences: ["He stepped onto the stage with some trepidation.", "She opened the test results with great trepidation.", "Entering the dark cave filled them with trepidation."] },
+                { word: "Uncanny", definition: "Strange or mysterious, especially in an unsettling way.", sentences: ["She has an uncanny ability to predict the future.", "There was an uncanny resemblance between the cousins.", "An uncanny quiet fell over the woods."] },
+                { word: "Vibrant", definition: "Full of energy and enthusiasm, or bright and striking in color.", sentences: ["The city has a vibrant nightlife and culture.", "She wore a vibrant red dress to the ceremony.", "The painting features vibrant shades of blue."] },
+                { word: "Wanderlust", definition: "A strong desire to travel and explore the world.", sentences: ["His wanderlust took him to over fifty countries.", "Reading travel magazines fueled her wanderlust.", "Unstoppable wanderlust kept her moving from city to city."] },
+                { word: "Yielding", definition: "Complying with requests; flexible or soft.", sentences: ["The soft mattress was comfortable and yielding.", "She gave a yielding smile after the long argument.", "The soil was soft and yielding underfoot."] },
+                { word: "Zenith", definition: "The time at which something is most powerful or successful.", sentences: ["At the zenith of her career, she won the Nobel Prize.", "The sun reached its zenith in the clear midday sky.", "The empire reached its zenith in the second century."] }
+            ]
+        };
 
         /* ==========================================================================
-           2. SPEECH & AUDIO ENGINE (Multi-Section 8-bit Music, Explosion, Male Voice)
+           2. ADVANCED MULTI-TRACK 8-BIT AUDIO ENGINE (Synthesizer & Chiptune Music)
            ========================================================================== */
         class AudioEngine {
             constructor() {
@@ -398,7 +431,7 @@
                 }
             }
 
-            // Multi-Section Multi-Track 8-bit Chiptune Music Engine
+            // Complex 64-step Polyphonic Chiptune Music Engine
             toggleBGM() {
                 this.init();
                 this.isBgmPlaying = !this.isBgmPlaying;
@@ -415,90 +448,83 @@
             startBGM() {
                 if (this.bgmTimer) clearInterval(this.bgmTimer);
                 
-                // Section 1: Intro / Verse 1 (A Minor driving synthwave)
-                const bassSec1 = [
-                    110.0, 0, 110.0, 164.8, 130.8, 0, 130.8, 196.0,
-                    146.8, 0, 146.8, 220.0, 123.5, 0, 98.0, 146.8
-                ];
-                const leadSec1 = [
-                    440.0, 523.2, 659.2, 523.2, 587.3, 659.2, 783.9, 659.2,
-                    698.4, 783.9, 880.0, 783.9, 587.3, 523.2, 440.0, 349.2
-                ];
-
-                // Section 2: Arpeggiated Verse 2 (Dynamic Shift to F / G Major)
-                const bassSec2 = [
-                    87.3, 130.8, 174.6, 220.0, 98.0, 146.8, 196.0, 246.9,
-                    110.0, 164.8, 220.0, 261.6, 65.4, 130.8, 196.0, 246.9
-                ];
-                const leadSec2 = [
-                    880.0, 659.2, 523.2, 440.0, 783.9, 587.3, 493.8, 392.0,
-                    659.2, 523.2, 440.0, 329.6, 587.3, 493.8, 392.0, 293.6
+                // Bassline (Sawtooth Synth Channel)
+                const bassline = [
+                    110, 110, 164.8, 110, 130.8, 130.8, 196, 130.8,
+                    146.8, 146.8, 220, 146.8, 123.5, 123.5, 146.8, 123.5,
+                    87.3, 87.3, 130.8, 87.3, 98, 98, 146.8, 98,
+                    110, 110, 164.8, 110, 164.8, 196, 220, 246.9,
+                    110, 0, 220, 110, 130.8, 0, 261.6, 130.8,
+                    146.8, 0, 293.6, 146.8, 164.8, 196, 220, 246.9,
+                    55, 55, 110, 55, 65.4, 65.4, 130.8, 65.4,
+                    73.4, 73.4, 146.8, 73.4, 82.4, 98, 110, 123.5
                 ];
 
-                // Section 3: High Voltage Chorus (Fast 16th-note escalation)
-                const bassSec3 = [
-                    110.0, 110.0, 220.0, 110.0, 130.8, 130.8, 261.6, 130.8,
-                    146.8, 146.8, 293.6, 146.8, 164.8, 196.0, 220.0, 246.9
-                ];
-                const leadSec3 = [
-                    880.0, 1046.5, 880.0, 659.2, 783.9, 880.0, 783.9, 523.2,
-                    698.4, 880.0, 698.4, 587.3, 659.2, 783.9, 880.0, 987.7
-                ];
-
-                // Section 4: Breakdown Bridge (Atmospheric half-tempo feel)
-                const bassSec4 = [
-                    55.0, 0, 0, 0, 65.4, 0, 0, 0,
-                    73.4, 0, 0, 0, 82.4, 0, 98.0, 0
-                ];
-                const leadSec4 = [
-                    440.0, 0, 523.2, 0, 392.0, 0, 440.0, 0,
-                    349.2, 0, 440.0, 0, 329.6, 0, 392.0, 0
+                // Main Lead Melody (Square Wave Channel)
+                const leadMelody = [
+                    440, 523.2, 659.2, 523.2, 587.3, 659.2, 783.9, 659.2,
+                    698.4, 783.9, 880, 783.9, 587.3, 523.2, 440, 349.2,
+                    880, 659.2, 523.2, 440, 783.9, 587.3, 493.8, 392,
+                    659.2, 523.2, 440, 329.6, 587.3, 493.8, 392, 293.6,
+                    880, 1046.5, 880, 659.2, 783.9, 880, 783.9, 523.2,
+                    698.4, 880, 698.4, 587.3, 659.2, 783.9, 880, 987.7,
+                    440, 0, 523.2, 0, 392, 0, 440, 0,
+                    349.2, 0, 440, 0, 329.6, 0, 392, 0
                 ];
 
-                const fullBass = [...bassSec1, ...bassSec2, ...bassSec3, ...bassSec4];
-                const fullLead = [...leadSec1, ...leadSec2, ...leadSec3, ...leadSec4];
+                // Fast 16th Note Arpeggio Counter-Melody
+                const arpNotes = [
+                    880, 1046.5, 1318.5, 1046.5, 698.4, 880, 1046.5, 880,
+                    783.9, 987.7, 1174.7, 987.7, 659.2, 783.9, 987.7, 783.9,
+                    698.4, 880, 1046.5, 880, 587.3, 698.4, 880, 698.4,
+                    523.2, 659.2, 783.9, 659.2, 440, 523.2, 659.2, 523.2,
+                    880, 1318.5, 1046.5, 1318.5, 783.9, 1174.7, 987.7, 1174.7,
+                    698.4, 1046.5, 880, 1046.5, 659.2, 987.7, 783.9, 987.7,
+                    440, 659.2, 523.2, 659.2, 392, 587.3, 493.8, 587.3,
+                    349.2, 523.2, 440, 523.2, 329.6, 493.8, 392, 493.8
+                ];
 
-                const bpm = 145;
+                const bpm = 150;
                 const intervalMs = (60 / bpm) * 1000 / 2;
 
                 this.bgmTimer = setInterval(() => {
                     if (!this.isBgmPlaying || !this.ctx) return;
                     const now = this.ctx.currentTime;
-                    const totalSteps = fullBass.length;
+                    const totalSteps = bassline.length;
                     const step = this.bgmStep % totalSteps;
 
                     // 1. Synth Bass Channel
-                    const bFreq = fullBass[step];
+                    const bFreq = bassline[step];
                     if (bFreq > 0) {
                         const oscB = this.ctx.createOscillator();
                         const gainB = this.ctx.createGain();
-                        oscB.type = (step >= 32 && step < 48) ? 'square' : 'sawtooth';
+                        oscB.type = 'sawtooth';
                         oscB.frequency.setValueAtTime(bFreq, now);
 
                         const filter = this.ctx.createBiquadFilter();
                         filter.type = 'lowpass';
-                        filter.frequency.setValueAtTime(step >= 48 ? 250 : 500, now);
+                        filter.frequency.setValueAtTime(450, now);
 
-                        gainB.gain.setValueAtTime(0.045, now);
-                        gainB.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                        gainB.gain.setValueAtTime(0.04, now);
+                        gainB.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
 
                         oscB.connect(filter);
                         filter.connect(gainB);
                         gainB.connect(this.ctx.destination);
 
                         oscB.start(now);
-                        oscB.stop(now + 0.15);
+                        oscB.stop(now + 0.14);
                     }
 
                     // 2. Lead Melody Channel
-                    const lFreq = fullLead[step];
+                    const lFreq = leadMelody[step];
                     if (lFreq > 0) {
                         const oscL = this.ctx.createOscillator();
                         const gainL = this.ctx.createGain();
                         oscL.type = 'square';
                         oscL.frequency.setValueAtTime(lFreq, now);
 
-                        gainL.gain.setValueAtTime(0.02, now);
+                        gainL.gain.setValueAtTime(0.018, now);
                         gainL.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
 
                         oscL.connect(gainL);
@@ -508,9 +534,27 @@
                         oscL.stop(now + 0.12);
                     }
 
-                    // 3. 8-bit Noise Hi-Hat / Percussion Channel (Rhythm)
-                    if (step % 2 === 0 && step < 48) {
-                        const noiseBuf = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.03, this.ctx.sampleRate);
+                    // 3. Fast Chiptune Arpeggio Channel
+                    const aFreq = arpNotes[step];
+                    if (aFreq > 0) {
+                        const oscA = this.ctx.createOscillator();
+                        const gainA = this.ctx.createGain();
+                        oscA.type = 'triangle';
+                        oscA.frequency.setValueAtTime(aFreq, now);
+
+                        gainA.gain.setValueAtTime(0.012, now);
+                        gainA.gain.exponentialRampToValueAtTime(0.0005, now + 0.08);
+
+                        oscA.connect(gainA);
+                        gainA.connect(this.ctx.destination);
+
+                        oscA.start(now);
+                        oscA.stop(now + 0.08);
+                    }
+
+                    // 4. Noise Percussion / Hi-Hat Channel
+                    if (step % 2 === 0) {
+                        const noiseBuf = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.025, this.ctx.sampleRate);
                         const output = noiseBuf.getChannelData(0);
                         for (let i = 0; i < noiseBuf.length; i++) {
                             output[i] = Math.random() * 2 - 1;
@@ -521,11 +565,11 @@
 
                         const hf = this.ctx.createBiquadFilter();
                         hf.type = 'highpass';
-                        hf.frequency.setValueAtTime(4000, now);
+                        hf.frequency.setValueAtTime(5000, now);
 
                         const ng = this.ctx.createGain();
-                        ng.gain.setValueAtTime(step % 4 === 0 ? 0.015 : 0.007, now);
-                        ng.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
+                        ng.gain.setValueAtTime(step % 4 === 0 ? 0.012 : 0.005, now);
+                        ng.gain.exponentialRampToValueAtTime(0.0001, now + 0.025);
 
                         noiseSrc.connect(hf);
                         hf.connect(ng);
@@ -694,7 +738,7 @@
         const soundEngine = new AudioEngine();
 
         /* ==========================================================================
-           3. GAME CONTROLLER LOGIC
+           3. GAME CONTROLLER LOGIC (With Tiered Difficulty Selection)
            ========================================================================== */
         class VocabSweeperGame {
             constructor() {
@@ -707,7 +751,6 @@
                 ];
                 this.currentLevelIdx = 0;
 
-                this.wordPool = [...DEFAULT_WORDS];
                 this.gridWords = [];
                 this.unrevealedWords = [];
                 this.targetWord = null;
@@ -736,6 +779,20 @@
                 return arr;
             }
 
+            // Get words tailored specifically for current level difficulty
+            getPoolForLevel(levelIdx) {
+                if (levelIdx === 0) {
+                    // Level 1: Only B1 Easy Words
+                    return [...VOCAB_DATABASE.b1];
+                } else if (levelIdx === 1) {
+                    // Level 2: Mix of B1 + Advanced
+                    return [...VOCAB_DATABASE.b1, ...VOCAB_DATABASE.advanced];
+                } else {
+                    // Levels 3-5: Pure Advanced / C1-C2 Words
+                    return [...VOCAB_DATABASE.advanced];
+                }
+            }
+
             startLevel(levelIdx = 0) {
                 this.currentLevelIdx = levelIdx;
                 this.isGameOver = false;
@@ -749,12 +806,12 @@
                 this.revealedCount = 0;
                 this.updateProgressBadge();
 
-                let pool = [...this.wordPool];
-                while (pool.length < levelConfig.count) {
-                    pool = pool.concat(DEFAULT_WORDS);
+                let currentPool = this.getPoolForLevel(this.currentLevelIdx);
+                while (currentPool.length < levelConfig.count) {
+                    currentPool = currentPool.concat(this.getPoolForLevel(this.currentLevelIdx));
                 }
 
-                const shuffledPool = this.shuffle(pool);
+                const shuffledPool = this.shuffle(currentPool);
                 this.gridWords = shuffledPool.slice(0, levelConfig.count);
                 this.unrevealedWords = [...this.gridWords];
 
