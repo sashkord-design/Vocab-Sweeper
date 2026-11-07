@@ -160,10 +160,12 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="font-black text-2xl md:text-3xl tracking-tight text-[#2b2b28] flex items-center gap-2 uppercase">
+                    <h1 class="font-black text-2xl md:text-3xl tracking-tight text-[#2b2b28] flex items-center gap-2 uppercase leading-none">
                         Angry Teacher
                     </h1>
-                    <p class="text-xs font-bold text-[#5c584e]">MATCH CHANNELS • AVOID DETONATION</p>
+                    <p class="text-xs font-mono-retro font-bold text-[#c04838] uppercase mt-1 tracking-wider">
+                        HE EXPLODES WHEN YOU MAKE A MISTAKE
+                    </p>
                 </div>
             </div>
 
@@ -225,17 +227,13 @@
         <!-- Sidebar / Full-Height Examples Panel & Controls -->
         <aside id="sidebar" class="bg-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl p-5 shadow-[6px_6px_0_0_#2b2b28] flex flex-col justify-between hidden lg:flex space-y-4 flex-1">
             
-            <!-- Enlarged Examples Panel -->
+            <!-- Enlarged Examples Panel (Top LISTEN button removed) -->
             <div id="examples-panel" class="bg-[#e8e2d0] rounded-2xl p-5 border-2 border-[#2b2b28] shadow-inner flex-1 flex flex-col justify-between min-h-[520px]">
                 <div class="flex flex-col h-full">
                     <div class="flex items-center justify-between border-b-2 border-[#2b2b28] pb-3 mb-4">
                         <h3 class="font-black text-[#2b2b28] text-base flex items-center gap-2">
                             <i class="fa-solid fa-book-open text-[#3b7080]"></i> EXAMPLES
                         </h3>
-                        <button id="btn-speak-examples" class="hidden text-[#2b2b28] hover:bg-[#d49e35] bg-[#f4efdf] border-2 border-[#2b2b28] px-3 py-1 rounded-lg text-xs transition font-mono-retro font-bold flex items-center gap-1.5 shadow-[2px_2px_0_0_#2b2b28]" title="Play / Stop pronunciation">
-                            <i id="examples-speaker-icon" class="fa-solid fa-volume-high"></i>
-                            <span id="examples-speaker-text">LISTEN</span>
-                        </button>
                     </div>
 
                     <div id="examples-content" class="selectable-text text-base text-[#2b2b28] space-y-4 italic flex-1 flex flex-col justify-center font-medium leading-relaxed">
@@ -352,7 +350,7 @@
         ];
 
         /* ==========================================================================
-           2. SPEECH & AUDIO ENGINE (Complex 8-bit Synth BGM Loop, Explosion, Bass)
+           2. SPEECH & AUDIO ENGINE (Multi-Section 8-bit Music, Explosion, Male Voice)
            ========================================================================== */
         class AudioEngine {
             constructor() {
@@ -361,6 +359,7 @@
                 this.isBgmPlaying = false;
                 this.bgmTimer = null;
                 this.bgmStep = 0;
+                this.activeSentenceSpeechBtn = null;
                 this.initVoices();
             }
 
@@ -398,7 +397,7 @@
                 }
             }
 
-            // Expanded Complex 8-bit Synthwave Background Music Loop
+            // Multi-Section Multi-Track 8-bit Chiptune Music Engine
             toggleBGM() {
                 this.init();
                 this.isBgmPlaying = !this.isBgmPlaying;
@@ -415,68 +414,123 @@
             startBGM() {
                 if (this.bgmTimer) clearInterval(this.bgmTimer);
                 
-                // Rich 32-step melodic bassline & arpeggio sequence
-                const bassline = [
-                    110.00, 0, 110.00, 164.81, 130.81, 0, 130.81, 196.00,
-                    146.83, 0, 146.83, 220.00, 123.47, 0, 98.00,  146.83,
-                    110.00, 0, 110.00, 164.81, 130.81, 0, 130.81, 196.00,
-                    164.81, 196.00, 220.00, 246.94, 261.63, 220.00, 196.00, 164.81
+                // Section 1: Intro / Verse 1 (A Minor driving synthwave)
+                const bassSec1 = [
+                    110.0, 0, 110.0, 164.8, 130.8, 0, 130.8, 196.0,
+                    146.8, 0, 146.8, 220.0, 123.5, 0, 98.0, 146.8
+                ];
+                const leadSec1 = [
+                    440.0, 523.2, 659.2, 523.2, 587.3, 659.2, 783.9, 659.2,
+                    698.4, 783.9, 880.0, 783.9, 587.3, 523.2, 440.0, 349.2
                 ];
 
-                const leadMelody = [
-                    440.00, 523.25, 659.25, 523.25, 587.33, 659.25, 783.99, 659.25,
-                    698.46, 783.99, 880.00, 783.99, 587.33, 523.25, 440.00, 349.23,
-                    440.00, 523.25, 659.25, 880.00, 783.99, 659.25, 587.33, 523.25,
-                    587.33, 659.25, 523.25, 440.00, 392.00, 440.00, 523.25, 440.00
+                // Section 2: Arpeggiated Verse 2 (Dynamic Shift to F / G Major)
+                const bassSec2 = [
+                    87.3, 130.8, 174.6, 220.0, 98.0, 146.8, 196.0, 246.9,
+                    110.0, 164.8, 220.0, 261.6, 65.4, 130.8, 196.0, 246.9
+                ];
+                const leadSec2 = [
+                    880.0, 659.2, 523.2, 440.0, 783.9, 587.3, 493.8, 392.0,
+                    659.2, 523.2, 440.0, 329.6, 587.3, 493.8, 392.0, 293.6
                 ];
 
-                const bpmTempo = 140;
-                const intervalMs = (60 / bpmTempo) * 1000 / 2; // 16th/8th step rhythm
+                // Section 3: High Voltage Chorus (Fast 16th-note escalation)
+                const bassSec3 = [
+                    110.0, 110.0, 220.0, 110.0, 130.8, 130.8, 261.6, 130.8,
+                    146.8, 146.8, 293.6, 146.8, 164.8, 196.0, 220.0, 246.9
+                ];
+                const leadSec3 = [
+                    880.0, 1046.5, 880.0, 659.2, 783.9, 880.0, 783.9, 523.2,
+                    698.4, 880.0, 698.4, 587.3, 659.2, 783.9, 880.0, 987.7
+                ];
+
+                // Section 4: Breakdown Bridge (Atmospheric half-tempo feel)
+                const bassSec4 = [
+                    55.0, 0, 0, 0, 65.4, 0, 0, 0,
+                    73.4, 0, 0, 0, 82.4, 0, 98.0, 0
+                ];
+                const leadSec4 = [
+                    440.0, 0, 523.2, 0, 392.0, 0, 440.0, 0,
+                    349.2, 0, 440.0, 0, 329.6, 0, 392.0, 0
+                ];
+
+                const fullBass = [...bassSec1, ...bassSec2, ...bassSec3, ...bassSec4];
+                const fullLead = [...leadSec1, ...leadSec2, ...leadSec3, ...leadSec4];
+
+                const bpm = 145;
+                const intervalMs = (60 / bpm) * 1000 / 2;
 
                 this.bgmTimer = setInterval(() => {
                     if (!this.isBgmPlaying || !this.ctx) return;
                     const now = this.ctx.currentTime;
-                    const stepIdx = this.bgmStep % bassline.length;
+                    const totalSteps = fullBass.length;
+                    const step = this.bgmStep % totalSteps;
 
-                    // 1. Warm Synth Bass (Sawtooth with lowpass filter)
-                    const bassFreq = bassline[stepIdx];
-                    if (bassFreq > 0) {
-                        const osc = this.ctx.createOscillator();
-                        const gain = this.ctx.createGain();
-                        osc.type = 'sawtooth';
-                        osc.frequency.setValueAtTime(bassFreq, now);
+                    // 1. Synth Bass Channel
+                    const bFreq = fullBass[step];
+                    if (bFreq > 0) {
+                        const oscB = this.ctx.createOscillator();
+                        const gainB = this.ctx.createGain();
+                        oscB.type = (step >= 32 && step < 48) ? 'square' : 'sawtooth';
+                        oscB.frequency.setValueAtTime(bFreq, now);
 
                         const filter = this.ctx.createBiquadFilter();
                         filter.type = 'lowpass';
-                        filter.frequency.setValueAtTime(550, now);
+                        filter.frequency.setValueAtTime(step >= 48 ? 250 : 500, now);
 
-                        gain.gain.setValueAtTime(0.045, now);
-                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+                        gainB.gain.setValueAtTime(0.045, now);
+                        gainB.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
 
-                        osc.connect(filter);
-                        filter.connect(gain);
-                        gain.connect(this.ctx.destination);
+                        oscB.connect(filter);
+                        filter.connect(gainB);
+                        gainB.connect(this.ctx.destination);
 
-                        osc.start(now);
-                        osc.stop(now + 0.16);
+                        oscB.start(now);
+                        oscB.stop(now + 0.15);
                     }
 
-                    // 2. Complex 8-bit Lead Melody (Square wave)
-                    const leadFreq = leadMelody[stepIdx];
-                    if (leadFreq > 0) {
-                        const oscLead = this.ctx.createOscillator();
-                        const gainLead = this.ctx.createGain();
-                        oscLead.type = 'square';
-                        oscLead.frequency.setValueAtTime(leadFreq, now);
+                    // 2. Lead Melody Channel
+                    const lFreq = fullLead[step];
+                    if (lFreq > 0) {
+                        const oscL = this.ctx.createOscillator();
+                        const gainL = this.ctx.createGain();
+                        oscL.type = 'square';
+                        oscL.frequency.setValueAtTime(lFreq, now);
 
-                        gainLead.gain.setValueAtTime(0.022, now);
-                        gainLead.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+                        gainL.gain.setValueAtTime(0.02, now);
+                        gainL.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
 
-                        oscLead.connect(gainLead);
-                        gainLead.connect(this.ctx.destination);
+                        oscL.connect(gainL);
+                        gainL.connect(this.ctx.destination);
 
-                        oscLead.start(now);
-                        oscLead.stop(now + 0.13);
+                        oscL.start(now);
+                        oscL.stop(now + 0.12);
+                    }
+
+                    // 3. 8-bit Noise Hi-Hat / Percussion Channel (Rhythm)
+                    if (step % 2 === 0 && step < 48) {
+                        const noiseBuf = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.03, this.ctx.sampleRate);
+                        const output = noiseBuf.getChannelData(0);
+                        for (let i = 0; i < noiseBuf.length; i++) {
+                            output[i] = Math.random() * 2 - 1;
+                        }
+
+                        const noiseSrc = this.ctx.createBufferSource();
+                        noiseSrc.buffer = noiseBuf;
+
+                        const hf = this.ctx.createBiquadFilter();
+                        hf.type = 'highpass';
+                        hf.frequency.setValueAtTime(4000, now);
+
+                        const ng = this.ctx.createGain();
+                        ng.gain.setValueAtTime(step % 4 === 0 ? 0.015 : 0.007, now);
+                        ng.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
+
+                        noiseSrc.connect(hf);
+                        hf.connect(ng);
+                        ng.connect(this.ctx.destination);
+
+                        noiseSrc.start(now);
                     }
 
                     this.bgmStep++;
@@ -667,7 +721,6 @@
                 this.progressBadge = document.getElementById('progress-badge');
                 this.modalOverlay = document.getElementById('modal-overlay');
                 this.examplesContentEl = document.getElementById('examples-content');
-                this.btnSpeakExamples = document.getElementById('btn-speak-examples');
                 this.btnSpeakTarget = document.getElementById('btn-speak-target');
 
                 this.initEvents();
@@ -753,32 +806,74 @@
             }
 
             resetExamplesPanel() {
-                this.btnSpeakExamples.classList.add('hidden');
                 this.examplesContentEl.innerHTML = `<p class="text-[#7c7668] text-center not-italic font-mono-retro text-xs">Select a correctly guessed card on the grid to view example sentences here.</p>`;
             }
 
+            // Per-sentence Audio Speaker Buttons Implementation
             updateExamplesPanel(wordObj) {
                 this.selectedCardData = wordObj;
-                this.btnSpeakExamples.classList.remove('hidden');
                 
                 const s1 = wordObj.sentences[0] || '';
                 const s2 = wordObj.sentences[1] || '';
                 const s3 = wordObj.sentences[2] || '';
 
                 this.examplesContentEl.innerHTML = `
-                    <div class="p-3.5 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28]">
-                        <span class="font-bold text-[#c04838] not-italic block mb-1 text-xs font-mono-retro">1. EXAMPLE</span>
+                    <div class="p-3.5 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] relative group">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-[#c04838] not-italic block text-xs font-mono-retro">1. EXAMPLE</span>
+                            <button class="btn-speak-sentence hover:scale-110 text-[#2b2b28] hover:text-[#c04838] p-1 transition" data-sentence="${encodeURIComponent(s1)}" title="Listen to Sentence">
+                                <i class="fa-solid fa-volume-high text-sm"></i>
+                            </button>
+                        </div>
                         <p class="leading-relaxed text-base">"${s1}"</p>
                     </div>
-                    <div class="p-3.5 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28]">
-                        <span class="font-bold text-[#3b7080] not-italic block mb-1 text-xs font-mono-retro">2. EXAMPLE</span>
+
+                    <div class="p-3.5 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] relative group">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-[#3b7080] not-italic block text-xs font-mono-retro">2. EXAMPLE</span>
+                            <button class="btn-speak-sentence hover:scale-110 text-[#2b2b28] hover:text-[#3b7080] p-1 transition" data-sentence="${encodeURIComponent(s2)}" title="Listen to Sentence">
+                                <i class="fa-solid fa-volume-high text-sm"></i>
+                            </button>
+                        </div>
                         <p class="leading-relaxed text-base">"${s2}"</p>
                     </div>
-                    <div class="p-3.5 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28]">
-                        <span class="font-bold text-[#547b4b] not-italic block mb-1 text-xs font-mono-retro">3. EXAMPLE</span>
+
+                    <div class="p-3.5 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] relative group">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-[#547b4b] not-italic block text-xs font-mono-retro">3. EXAMPLE</span>
+                            <button class="btn-speak-sentence hover:scale-110 text-[#2b2b28] hover:text-[#547b4b] p-1 transition" data-sentence="${encodeURIComponent(s3)}" title="Listen to Sentence">
+                                <i class="fa-solid fa-volume-high text-sm"></i>
+                            </button>
+                        </div>
                         <p class="leading-relaxed text-base">"${s3}"</p>
                     </div>
                 `;
+
+                // Attach click handlers to each sentence speaker icon
+                const btns = this.examplesContentEl.querySelectorAll('.btn-speak-sentence');
+                btns.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const rawSentence = decodeURIComponent(btn.dataset.sentence);
+                        const icon = btn.querySelector('i');
+
+                        // Reset any currently playing sentence icon
+                        if (soundEngine.activeSentenceSpeechBtn && soundEngine.activeSentenceSpeechBtn !== btn) {
+                            const oldIcon = soundEngine.activeSentenceSpeechBtn.querySelector('i');
+                            if (oldIcon) oldIcon.className = "fa-solid fa-volume-high text-sm";
+                        }
+
+                        soundEngine.toggleSpeech(rawSentence, (isPlaying) => {
+                            if (isPlaying) {
+                                soundEngine.activeSentenceSpeechBtn = btn;
+                                icon.className = "fa-solid fa-stop text-sm text-[#c04838]";
+                            } else {
+                                soundEngine.activeSentenceSpeechBtn = null;
+                                icon.className = "fa-solid fa-volume-high text-sm";
+                            }
+                        });
+                    });
+                });
             }
 
             pickNextTarget() {
@@ -964,24 +1059,6 @@
                         } else {
                             iconEl.className = "fa-solid fa-volume-high text-sm";
                             this.btnSpeakTarget.classList.remove('bg-[#c04838]', 'text-white');
-                        }
-                    });
-                });
-
-                // Examples Speaker Button
-                this.btnSpeakExamples.addEventListener('click', () => {
-                    if (!this.selectedCardData) return;
-                    const textToSpeak = `${this.selectedCardData.word}. Examples: ${this.selectedCardData.sentences.join('. ')}`;
-                    const iconEl = document.getElementById('examples-speaker-icon');
-                    const textEl = document.getElementById('examples-speaker-text');
-
-                    soundEngine.toggleSpeech(textToSpeak, (isPlaying) => {
-                        if (isPlaying) {
-                            iconEl.className = "fa-solid fa-stop";
-                            textEl.textContent = "STOP";
-                        } else {
-                            iconEl.className = "fa-solid fa-volume-high";
-                            textEl.textContent = "LISTEN";
                         }
                     });
                 });
