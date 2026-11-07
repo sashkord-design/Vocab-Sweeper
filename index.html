@@ -227,7 +227,7 @@
         <!-- Sidebar / Full-Height Examples Panel & Controls -->
         <aside id="sidebar" class="bg-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl p-5 shadow-[6px_6px_0_0_#2b2b28] flex flex-col justify-between hidden lg:flex space-y-4 flex-1">
             
-            <!-- Enlarged Examples Panel (Top LISTEN button removed) -->
+            <!-- Enlarged Examples Panel -->
             <div id="examples-panel" class="bg-[#e8e2d0] rounded-2xl p-5 border-2 border-[#2b2b28] shadow-inner flex-1 flex flex-col justify-between min-h-[520px]">
                 <div class="flex flex-col h-full">
                     <div class="flex items-center justify-between border-b-2 border-[#2b2b28] pb-3 mb-4">
@@ -260,8 +260,9 @@
             <div id="modal-icon" class="w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 shadow-[4px_4px_0_0_#2b2b28] border-3 border-[#2b2b28] bg-[#c04838] text-[#f4efdf]">
                 <i class="fa-solid fa-bomb"></i>
             </div>
-            <h2 id="modal-title" class="text-3xl font-black text-[#2b2b28] mb-2 tracking-wide uppercase">OVERLOAD!</h2>
-            <p id="modal-message" class="text-sm font-mono-retro text-[#5c584e] mb-6 font-bold">Wrong selection. Channel overloaded! Resetting current deck.</p>
+            <!-- Updated Texts as requested -->
+            <h2 id="modal-title" class="text-3xl font-black text-[#2b2b28] mb-2 tracking-wide uppercase">BOOM!!!</h2>
+            <p id="modal-message" class="text-sm font-mono-retro text-[#5c584e] mb-6 font-bold">One mistake—and you’re a flaming steak.</p>
             <button id="modal-action-btn" class="w-full bg-[#c04838] hover:bg-[#a53b2d] text-[#f4efdf] font-black py-3 px-6 rounded-xl transition transform active:scale-95 shadow-[4px_4px_0_0_#2b2b28] border-3 border-[#2b2b28] uppercase">
                 TRY AGAIN
             </button>
@@ -809,7 +810,6 @@
                 this.examplesContentEl.innerHTML = `<p class="text-[#7c7668] text-center not-italic font-mono-retro text-xs">Select a correctly guessed card on the grid to view example sentences here.</p>`;
             }
 
-            // Per-sentence Audio Speaker Buttons Implementation
             updateExamplesPanel(wordObj) {
                 this.selectedCardData = wordObj;
                 
@@ -849,7 +849,6 @@
                     </div>
                 `;
 
-                // Attach click handlers to each sentence speaker icon
                 const btns = this.examplesContentEl.querySelectorAll('.btn-speak-sentence');
                 btns.forEach(btn => {
                     btn.addEventListener('click', (e) => {
@@ -857,7 +856,6 @@
                         const rawSentence = decodeURIComponent(btn.dataset.sentence);
                         const icon = btn.querySelector('i');
 
-                        // Reset any currently playing sentence icon
                         if (soundEngine.activeSentenceSpeechBtn && soundEngine.activeSentenceSpeechBtn !== btn) {
                             const oldIcon = soundEngine.activeSentenceSpeechBtn.querySelector('i');
                             if (oldIcon) oldIcon.className = "fa-solid fa-volume-high text-sm";
@@ -902,7 +900,6 @@
                 }
 
                 if (clickedWordObj.word === this.targetWord.word) {
-                    // Play pleasant electronic click tone
                     soundEngine.playCorrectCard();
 
                     cardItem.classList.add('correct');
@@ -947,8 +944,8 @@
                     this.showModal(
                         'bg-[#c04838] text-[#f4efdf] border-[#2b2b28]',
                         '<i class="fa-solid fa-bomb"></i>',
-                        'OVERLOAD!',
-                        `Wrong selection. Channel overloaded! Resetting current deck.`,
+                        'BOOM!!!',
+                        'One mistake—and you’re a flaming steak.',
                         'TRY AGAIN',
                         () => this.startLevel(0)
                     );
