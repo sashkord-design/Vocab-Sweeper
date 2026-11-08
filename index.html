@@ -193,25 +193,32 @@
     </header>
 
     <!-- Main Container -->
-    <main class="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 flex-1">
+    <main class="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 flex-1 items-start">
         
         <!-- Game Section (Takes 3 Columns on Large Screens) -->
         <section class="lg:col-span-3 flex flex-col justify-start items-center space-y-4">
             
-            <!-- Current Clue Banner with Target Pronunciation Speaker -->
+            <!-- Current Clue Banner with Target Pronunciation Speaker, Timer & Right Arrow -->
             <div class="w-full bg-[#3b7080] text-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl p-4 md:p-6 text-center shadow-[6px_6px_0_0_#2b2b28] relative overflow-hidden">
                 <div class="flex items-center justify-between mb-2">
-                    <div class="inline-block px-3 py-1 bg-[#d49e35] text-[#2b2b28] font-mono-retro font-bold text-[10px] tracking-widest rounded-lg uppercase border border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28]">
-                        CURRENT TARGET DEFINITION
+                    <!-- Retro Timer Badge -->
+                    <div id="timer-badge" class="px-3 py-1 bg-[#d49e35] text-[#2b2b28] font-mono-retro font-bold text-xs tracking-widest rounded-lg uppercase border border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] flex items-center gap-1.5">
+                        <i class="fa-solid fa-stopwatch text-sm"></i>
+                        <span id="timer-text">25s</span>
                     </div>
-                    <!-- Speaker Button for Target Definition -->
-                    <button id="btn-speak-target" class="text-[#f4efdf] hover:text-[#d49e35] bg-[#2b2b28]/30 hover:bg-[#2b2b28]/60 p-2 rounded-xl transition border border-[#f4efdf]/30 flex items-center gap-1.5 text-xs font-mono-retro font-bold" title="Listen to Definition">
-                        <i id="target-speaker-icon" class="fa-solid fa-volume-high text-sm"></i>
-                        <span class="hidden sm:inline">LISTEN</span>
-                    </button>
+
+                    <!-- Speaker and Next Arrow Buttons -->
+                    <div class="flex items-center gap-2">
+                        <button id="btn-speak-target" class="text-[#f4efdf] hover:text-[#d49e35] bg-[#2b2b28]/30 hover:bg-[#2b2b28]/60 p-2.5 rounded-xl transition border border-[#f4efdf]/30 flex items-center justify-center w-10 h-10" title="Listen to Definition">
+                            <i id="target-speaker-icon" class="fa-solid fa-volume-high text-sm"></i>
+                        </button>
+                        <button id="btn-next-target" class="text-[#2b2b28] bg-[#d49e35] hover:bg-[#e2af46] p-2.5 rounded-xl transition border border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] flex items-center justify-center w-10 h-10 active:scale-95" title="Next Word">
+                            <i class="fa-solid fa-arrow-right text-sm font-black"></i>
+                        </button>
+                    </div>
                 </div>
                 <p id="target-definition" class="selectable-text text-base md:text-xl font-bold italic transition-all duration-300 min-h-[3rem] flex items-center justify-center px-4">
-                    Loading target definition...
+                    Press the right arrow [ -> ] to start definition and timer!
                 </p>
             </div>
 
@@ -224,25 +231,21 @@
 
         </section>
 
-        <!-- Sidebar / Full-Height Examples Panel & Controls -->
-        <aside id="sidebar" class="bg-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl p-5 shadow-[6px_6px_0_0_#2b2b28] flex flex-col justify-between hidden lg:flex space-y-4 flex-1">
+        <!-- Sidebar / Examples Panel & Controls (Height matched to grid) -->
+        <aside id="sidebar" class="bg-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl p-5 shadow-[6px_6px_0_0_#2b2b28] flex flex-col justify-between hidden lg:flex space-y-4">
             
-            <!-- Enlarged Examples Panel -->
-            <div id="examples-panel" class="bg-[#e8e2d0] rounded-2xl p-5 border-2 border-[#2b2b28] shadow-inner flex-1 flex flex-col justify-between min-h-[520px]">
-                <div class="flex flex-col h-full">
+            <!-- Examples Panel (Matched size without bottom text) -->
+            <div id="examples-panel" class="bg-[#e8e2d0] rounded-2xl p-5 border-2 border-[#2b2b28] shadow-inner flex flex-col justify-between h-[450px]">
+                <div class="flex flex-col h-full overflow-y-auto pr-1">
                     <div class="flex items-center justify-between border-b-2 border-[#2b2b28] pb-3 mb-4">
                         <h3 class="font-black text-[#2b2b28] text-base flex items-center gap-2">
                             <i class="fa-solid fa-book-open text-[#3b7080]"></i> EXAMPLES
                         </h3>
                     </div>
 
-                    <div id="examples-content" class="selectable-text text-base text-[#2b2b28] space-y-4 italic flex-1 flex flex-col justify-center font-medium leading-relaxed">
+                    <div id="examples-content" class="selectable-text text-sm md:text-base text-[#2b2b28] space-y-3 italic flex-1 flex flex-col justify-center font-medium leading-relaxed">
                         <p class="text-[#7c7668] text-center not-italic font-mono-retro text-xs">Select a correctly guessed card on the grid to view example sentences here.</p>
                     </div>
-                </div>
-
-                <div class="mt-4 pt-3 border-t border-[#c8c2b0] text-[10px] font-mono-retro text-[#7c7668] text-center uppercase tracking-wider">
-                    Contextual Usage Panel
                 </div>
             </div>
 
@@ -273,7 +276,6 @@
            1. EXPANDED VOCABULARY DATABASE (200 Words Categorized by Difficulty B1->C2)
            ========================================================================== */
         const VOCAB_DATABASE = {
-            // Level 1 Pool: B1 (Intermediate / Easy)
             b1: [
                 { word: "Achieve", definition: "Successfully bring about or reach a desired objective or result by effort.", sentences: ["With dedication, you can achieve your career goals.", "She worked hard to achieve financial independence.", "They managed to achieve great results in a short time."] },
                 { word: "Believe", definition: "Accept something as true, real, or valid without immediate proof.", sentences: ["Always believe in your own hidden capabilities.", "I believe that honesty is the foundation of friendship.", "Many people believe that practice makes perfect."] },
@@ -306,8 +308,6 @@
                 { word: "Solve", definition: "Find an answer to, explanation for, or means of dealing with a problem.", sentences: ["Puzzles help train your brain to solve problems.", "Together we can solve any complex issue.", "He worked through the night to solve the glitch."] },
                 { word: "Wonder", definition: "A feeling of amazement and admiration, or a desire to know something.", sentences: ["I wonder what the weather will be like tomorrow.", "The child looked at the starry sky with wonder.", "It is no wonder she won the first prize."] }
             ],
-
-            // Level 2-5 Pool: B2, C1, C2 (Upper-Intermediate to Advanced)
             advanced: [
                 { word: "Ambition", definition: "A strong desire to do or to achieve something, typically requiring determination and hard work.", sentences: ["Her ambition was to become a leading scientist.", "He worked hard to fulfill his career ambitions.", "Without ambition, talent alone rarely leads to success."] },
                 { word: "Resilience", definition: "The capacity to withstand or recover quickly from difficult conditions or toughness.", sentences: ["The team showed great resilience after their initial defeat.", "Children often demonstrate remarkable emotional resilience.", "Building psychological resilience helps people cope with stress."] },
@@ -384,7 +384,7 @@
         };
 
         /* ==========================================================================
-           2. ADVANCED MULTI-TRACK 8-BIT AUDIO ENGINE (Synthesizer & Chiptune Music)
+           2. ADVANCED MULTI-TRACK 8-BIT AUDIO ENGINE
            ========================================================================== */
         class AudioEngine {
             constructor() {
@@ -431,7 +431,6 @@
                 }
             }
 
-            // Complex 64-step Polyphonic Chiptune Music Engine
             toggleBGM() {
                 this.init();
                 this.isBgmPlaying = !this.isBgmPlaying;
@@ -448,7 +447,6 @@
             startBGM() {
                 if (this.bgmTimer) clearInterval(this.bgmTimer);
                 
-                // Bassline (Sawtooth Synth Channel)
                 const bassline = [
                     110, 110, 164.8, 110, 130.8, 130.8, 196, 130.8,
                     146.8, 146.8, 220, 146.8, 123.5, 123.5, 146.8, 123.5,
@@ -460,7 +458,6 @@
                     73.4, 73.4, 146.8, 73.4, 82.4, 98, 110, 123.5
                 ];
 
-                // Main Lead Melody (Square Wave Channel)
                 const leadMelody = [
                     440, 523.2, 659.2, 523.2, 587.3, 659.2, 783.9, 659.2,
                     698.4, 783.9, 880, 783.9, 587.3, 523.2, 440, 349.2,
@@ -472,7 +469,6 @@
                     349.2, 0, 440, 0, 329.6, 0, 392, 0
                 ];
 
-                // Fast 16th Note Arpeggio Counter-Melody
                 const arpNotes = [
                     880, 1046.5, 1318.5, 1046.5, 698.4, 880, 1046.5, 880,
                     783.9, 987.7, 1174.7, 987.7, 659.2, 783.9, 987.7, 783.9,
@@ -493,7 +489,6 @@
                     const totalSteps = bassline.length;
                     const step = this.bgmStep % totalSteps;
 
-                    // 1. Synth Bass Channel
                     const bFreq = bassline[step];
                     if (bFreq > 0) {
                         const oscB = this.ctx.createOscillator();
@@ -516,7 +511,6 @@
                         oscB.stop(now + 0.14);
                     }
 
-                    // 2. Lead Melody Channel
                     const lFreq = leadMelody[step];
                     if (lFreq > 0) {
                         const oscL = this.ctx.createOscillator();
@@ -534,7 +528,6 @@
                         oscL.stop(now + 0.12);
                     }
 
-                    // 3. Fast Chiptune Arpeggio Channel
                     const aFreq = arpNotes[step];
                     if (aFreq > 0) {
                         const oscA = this.ctx.createOscillator();
@@ -552,7 +545,6 @@
                         oscA.stop(now + 0.08);
                     }
 
-                    // 4. Noise Percussion / Hi-Hat Channel
                     if (step % 2 === 0) {
                         const noiseBuf = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.025, this.ctx.sampleRate);
                         const output = noiseBuf.getChannelData(0);
@@ -589,17 +581,15 @@
                 }
             }
 
-            // Short pleasant 8-bit electronic chime when picking correct card
             playCorrectCard() {
                 this.init();
                 const now = this.ctx.currentTime;
                 
-                // Synth Blip 1
                 const osc1 = this.ctx.createOscillator();
                 const gain1 = this.ctx.createGain();
                 osc1.type = 'sine';
-                osc1.frequency.setValueAtTime(523.25, now); // C5
-                osc1.frequency.exponentialRampToValueAtTime(783.99, now + 0.08); // G5
+                osc1.frequency.setValueAtTime(523.25, now);
+                osc1.frequency.exponentialRampToValueAtTime(783.99, now + 0.08);
                 gain1.gain.setValueAtTime(0.3, now);
                 gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
                 osc1.connect(gain1);
@@ -607,11 +597,10 @@
                 osc1.start(now);
                 osc1.stop(now + 0.15);
 
-                // Synth Blip 2 (Harmony)
                 const osc2 = this.ctx.createOscillator();
                 const gain2 = this.ctx.createGain();
                 osc2.type = 'triangle';
-                osc2.frequency.setValueAtTime(1046.50, now + 0.05); // C6
+                osc2.frequency.setValueAtTime(1046.50, now + 0.05);
                 gain2.gain.setValueAtTime(0.2, now + 0.05);
                 gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
                 osc2.connect(gain2);
@@ -620,12 +609,10 @@
                 osc2.stop(now + 0.2);
             }
 
-            // Heavy Sub-Bass Enhanced Explosion Sound Effect
             playExplosion() {
                 this.init();
                 const now = this.ctx.currentTime;
 
-                // 1. Sub-Bass Drop Oscillator
                 const subOsc = this.ctx.createOscillator();
                 const subGain = this.ctx.createGain();
                 subOsc.type = 'triangle';
@@ -640,7 +627,6 @@
                 subOsc.start(now);
                 subOsc.stop(now + 0.9);
 
-                // 2. Heavy Noise Impact
                 const bufferSize = this.ctx.sampleRate * 1.0;
                 const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
                 const data = buffer.getChannelData(0);
@@ -704,8 +690,8 @@
 
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'en-US';
-                utterance.rate = 0.88; // Deep male reading pace
-                utterance.pitch = 0.75; // Deep bass tone adjustment
+                utterance.rate = 0.88;
+                utterance.pitch = 0.75;
 
                 if (this.preferredVoice) {
                     utterance.voice = this.preferredVoice;
@@ -738,7 +724,7 @@
         const soundEngine = new AudioEngine();
 
         /* ==========================================================================
-           3. GAME CONTROLLER LOGIC (With Tiered Difficulty Selection)
+           3. GAME CONTROLLER LOGIC (With 25s Timer & Right-Arrow Control)
            ========================================================================== */
         class VocabSweeperGame {
             constructor() {
@@ -756,7 +742,12 @@
                 this.targetWord = null;
                 this.revealedCount = 0;
                 this.isGameOver = false;
+                this.isRoundActive = false;
                 this.selectedCardData = null;
+
+                // Timer parameters
+                this.timeLeft = 25;
+                this.timerInterval = null;
 
                 // Elements
                 this.gridEl = document.getElementById('game-grid');
@@ -766,6 +757,9 @@
                 this.modalOverlay = document.getElementById('modal-overlay');
                 this.examplesContentEl = document.getElementById('examples-content');
                 this.btnSpeakTarget = document.getElementById('btn-speak-target');
+                this.btnNextTarget = document.getElementById('btn-next-target');
+                this.timerTextEl = document.getElementById('timer-text');
+                this.timerBadgeEl = document.getElementById('timer-badge');
 
                 this.initEvents();
             }
@@ -779,16 +773,12 @@
                 return arr;
             }
 
-            // Get words tailored specifically for current level difficulty
             getPoolForLevel(levelIdx) {
                 if (levelIdx === 0) {
-                    // Level 1: Only B1 Easy Words
                     return [...VOCAB_DATABASE.b1];
                 } else if (levelIdx === 1) {
-                    // Level 2: Mix of B1 + Advanced
                     return [...VOCAB_DATABASE.b1, ...VOCAB_DATABASE.advanced];
                 } else {
-                    // Levels 3-5: Pure Advanced / C1-C2 Words
                     return [...VOCAB_DATABASE.advanced];
                 }
             }
@@ -796,6 +786,7 @@
             startLevel(levelIdx = 0) {
                 this.currentLevelIdx = levelIdx;
                 this.isGameOver = false;
+                this.stopTimer();
                 soundEngine.stopSpeech();
                 this.selectedCardData = null;
                 this.resetExamplesPanel();
@@ -816,7 +807,12 @@
                 this.unrevealedWords = [...this.gridWords];
 
                 this.renderGrid(levelConfig.size);
-                this.pickNextTarget();
+
+                // Reset definition banner prompt until player clicks arrow
+                this.targetWord = null;
+                this.isRoundActive = false;
+                this.targetDefEl.textContent = "Press the right arrow [ -> ] to load definition and start 25s timer!";
+                this.timerTextEl.textContent = "25s";
             }
 
             renderGrid(gridSize) {
@@ -875,34 +871,34 @@
                 const s3 = wordObj.sentences[2] || '';
 
                 this.examplesContentEl.innerHTML = `
-                    <div class="p-3.5 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] relative group">
+                    <div class="p-3 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] relative group">
                         <div class="flex items-center justify-between mb-1">
                             <span class="font-bold text-[#c04838] not-italic block text-xs font-mono-retro">1. EXAMPLE</span>
                             <button class="btn-speak-sentence hover:scale-110 text-[#2b2b28] hover:text-[#c04838] p-1 transition" data-sentence="${encodeURIComponent(s1)}" title="Listen to Sentence">
                                 <i class="fa-solid fa-volume-high text-sm"></i>
                             </button>
                         </div>
-                        <p class="leading-relaxed text-base">"${s1}"</p>
+                        <p class="leading-relaxed text-sm">"${s1}"</p>
                     </div>
 
-                    <div class="p-3.5 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] relative group">
+                    <div class="p-3 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] relative group">
                         <div class="flex items-center justify-between mb-1">
                             <span class="font-bold text-[#3b7080] not-italic block text-xs font-mono-retro">2. EXAMPLE</span>
                             <button class="btn-speak-sentence hover:scale-110 text-[#2b2b28] hover:text-[#3b7080] p-1 transition" data-sentence="${encodeURIComponent(s2)}" title="Listen to Sentence">
                                 <i class="fa-solid fa-volume-high text-sm"></i>
                             </button>
                         </div>
-                        <p class="leading-relaxed text-base">"${s2}"</p>
+                        <p class="leading-relaxed text-sm">"${s2}"</p>
                     </div>
 
-                    <div class="p-3.5 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] relative group">
+                    <div class="p-3 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] relative group">
                         <div class="flex items-center justify-between mb-1">
                             <span class="font-bold text-[#547b4b] not-italic block text-xs font-mono-retro">3. EXAMPLE</span>
                             <button class="btn-speak-sentence hover:scale-110 text-[#2b2b28] hover:text-[#547b4b] p-1 transition" data-sentence="${encodeURIComponent(s3)}" title="Listen to Sentence">
                                 <i class="fa-solid fa-volume-high text-sm"></i>
                             </button>
                         </div>
-                        <p class="leading-relaxed text-base">"${s3}"</p>
+                        <p class="leading-relaxed text-sm">"${s3}"</p>
                     </div>
                 `;
 
@@ -931,7 +927,10 @@
                 });
             }
 
-            pickNextTarget() {
+            // Trigger next target manually via arrow click
+            loadNextTarget() {
+                if (this.isGameOver) return;
+
                 if (this.unrevealedWords.length === 0) {
                     this.handleLevelCompleted();
                     return;
@@ -945,10 +944,51 @@
                     this.targetDefEl.textContent = this.targetWord.definition;
                     this.targetDefEl.classList.remove('opacity-0');
                 }, 150);
+
+                // Start 25s timer for this word
+                this.startTimer();
+            }
+
+            startTimer() {
+                this.stopTimer();
+                this.timeLeft = 25;
+                this.isRoundActive = true;
+                this.timerTextEl.textContent = `${this.timeLeft}s`;
+                this.timerBadgeEl.classList.remove('bg-[#c04838]', 'text-[#f4efdf]');
+                this.timerBadgeEl.classList.add('bg-[#d49e35]', 'text-[#2b2b28]');
+
+                this.timerInterval = setInterval(() => {
+                    this.timeLeft--;
+                    this.timerTextEl.textContent = `${this.timeLeft}s`;
+
+                    if (this.timeLeft <= 5) {
+                        this.timerBadgeEl.classList.remove('bg-[#d49e35]', 'text-[#2b2b28]');
+                        this.timerBadgeEl.classList.add('bg-[#c04838]', 'text-[#f4efdf]');
+                    }
+
+                    if (this.timeLeft <= 0) {
+                        this.stopTimer();
+                        this.handleExplosion();
+                    }
+                }, 1000);
+            }
+
+            stopTimer() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+                this.isRoundActive = false;
             }
 
             handleCardClick(cardWrapperEl, clickedWordObj) {
                 if (this.isGameOver) return;
+
+                // If user clicks a card before pressing the right arrow to start the round
+                if (!this.isRoundActive || !this.targetWord) {
+                    return;
+                }
+
                 const cardItem = cardWrapperEl.querySelector('.card-item');
 
                 if (cardItem.classList.contains('correct')) {
@@ -957,12 +997,16 @@
                 }
 
                 if (clickedWordObj.word === this.targetWord.word) {
+                    // Correct! Stop the 25s timer immediately
+                    this.stopTimer();
                     soundEngine.playCorrectCard();
 
                     cardItem.classList.add('correct');
                     const speakBtn = cardItem.querySelector('.btn-card-speak');
-                    if (speakBtn) speakBtn.classList.remove('hidden');
-                    speakBtn.classList.add('flex');
+                    if (speakBtn) {
+                        speakBtn.classList.remove('hidden');
+                        speakBtn.classList.add('flex');
+                    }
 
                     this.updateExamplesPanel(clickedWordObj);
 
@@ -970,17 +1014,26 @@
                     this.revealedCount++;
                     this.updateProgressBadge();
 
-                    setTimeout(() => {
-                        this.pickNextTarget();
-                    }, 300);
+                    // Prompt player to press right arrow for next word
+                    this.targetWord = null;
+                    this.targetDefEl.textContent = "Correct! Click the right arrow [ -> ] to load the next definition.";
+                    this.timerTextEl.textContent = "25s";
+
+                    if (this.unrevealedWords.length === 0) {
+                        setTimeout(() => {
+                            this.handleLevelCompleted();
+                        }, 400);
+                    }
 
                 } else {
+                    this.stopTimer();
                     this.handleExplosion();
                 }
             }
 
             handleExplosion() {
                 this.isGameOver = true;
+                this.stopTimer();
                 soundEngine.stopSpeech();
                 soundEngine.playExplosion();
 
@@ -1010,6 +1063,7 @@
             }
 
             handleLevelCompleted() {
+                this.stopTimer();
                 soundEngine.playSuccess();
                 const isLastLevel = this.currentLevelIdx >= this.levels.length - 1;
 
@@ -1115,6 +1169,11 @@
                             this.btnSpeakTarget.classList.remove('bg-[#c04838]', 'text-white');
                         }
                     });
+                });
+
+                // Right Arrow Button for Next Target & Timer Trigger
+                this.btnNextTarget.addEventListener('click', () => {
+                    this.loadNextTarget();
                 });
             }
         }
