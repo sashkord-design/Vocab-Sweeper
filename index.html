@@ -170,29 +170,29 @@
         <!-- Game Section (Takes 5 Columns on Large Screens) -->
         <section class="lg:col-span-5 flex flex-col justify-start items-center space-y-4">
             
-            <!-- Current Clue Banner with definition text shifted higher up -->
-            <div class="w-full bg-[#3b7080] text-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl p-3 md:p-4 text-center shadow-[6px_6px_0_0_#2b2b28] relative overflow-hidden flex flex-col justify-between min-h-[120px]">
-                <div class="flex items-center justify-between">
-                    <!-- Retro Timer Badge -->
-                    <div id="timer-badge" class="px-3.5 py-1.5 bg-[#d49e35] text-[#2b2b28] font-mono-retro font-black text-base md:text-lg tracking-widest rounded-xl uppercase border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] flex items-center justify-center">
-                        <span id="timer-text">25s</span>
-                    </div>
-
-                    <!-- Speaker and Next Arrow Buttons -->
-                    <div class="flex items-center gap-2">
-                        <button id="btn-speak-target" class="text-[#f4efdf] hover:text-[#d49e35] bg-[#2b2b28]/30 hover:bg-[#2b2b28]/60 p-2.5 rounded-xl transition border border-[#f4efdf]/30 flex items-center justify-center w-10 h-10" title="Listen to Definition">
-                            <i id="target-speaker-icon" class="fa-solid fa-volume-high text-sm"></i>
-                        </button>
-                        <button id="btn-next-target" class="text-[#2b2b28] bg-[#d49e35] hover:bg-[#e2af46] p-2.5 rounded-xl transition border border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] flex items-center justify-center w-10 h-10 active:scale-95" title="Next Word">
-                            <i class="fa-solid fa-arrow-right text-sm font-black"></i>
-                        </button>
-                    </div>
-                </div>
-                <!-- Definition text aligned to top for higher placement -->
-                <div class="flex-1 flex items-start justify-center pt-2 pb-1">
-                    <p id="target-definition" class="selectable-text text-lg md:text-xl font-bold italic transition-all duration-300 px-4 leading-relaxed max-w-2xl">
+            <!-- Current Clue Banner with absolute centered text perfectly spaced from edges -->
+            <div class="w-full bg-[#3b7080] text-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl p-4 md:p-5 text-center shadow-[6px_6px_0_0_#2b2b28] relative overflow-hidden flex items-center justify-between min-h-[120px]">
+                
+                <!-- Absolute Centered Definition Text Container -->
+                <div class="absolute inset-0 flex items-center justify-center px-24 md:px-28 pointer-events-none">
+                    <p id="target-definition" class="selectable-text text-lg md:text-xl font-bold italic transition-all duration-300 leading-relaxed text-center pointer-events-auto">
                         Press the right arrow [ -> ] to start definition and timer!
                     </p>
+                </div>
+
+                <!-- Left Side: Retro Timer Badge -->
+                <div id="timer-badge" class="z-10 px-3.5 py-1.5 bg-[#d49e35] text-[#2b2b28] font-mono-retro font-black text-base md:text-lg tracking-widest rounded-xl uppercase border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] flex items-center justify-center shrink-0">
+                    <span id="timer-text">25s</span>
+                </div>
+
+                <!-- Right Side: Speaker and Next Arrow Buttons -->
+                <div class="z-10 flex items-center gap-2 shrink-0">
+                    <button id="btn-speak-target" class="text-[#f4efdf] hover:text-[#d49e35] bg-[#2b2b28]/30 hover:bg-[#2b2b28]/60 p-2.5 rounded-xl transition border border-[#f4efdf]/30 flex items-center justify-center w-10 h-10" title="Listen to Definition">
+                        <i id="target-speaker-icon" class="fa-solid fa-volume-high text-sm"></i>
+                    </button>
+                    <button id="btn-next-target" class="text-[#2b2b28] bg-[#d49e35] hover:bg-[#e2af46] p-2.5 rounded-xl transition border border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] flex items-center justify-center w-10 h-10 active:scale-95" title="Next Word">
+                        <i class="fa-solid fa-arrow-right text-sm font-black"></i>
+                    </button>
                 </div>
             </div>
 
