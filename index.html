@@ -164,14 +164,14 @@
         </div>
     </header>
 
-    <!-- Main Container: Grid layout changed to 7 columns (5 for game, 2 for wider sidebar) -->
+    <!-- Main Container -->
     <main class="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-7 gap-6 flex-1 items-stretch">
         
         <!-- Game Section (Takes 5 Columns on Large Screens) -->
         <section class="lg:col-span-5 flex flex-col justify-start items-center space-y-4">
             
-            <!-- Current Clue Banner: Height adjusted so definition comfortably fits in two lines -->
-            <div class="w-full bg-[#3b7080] text-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl p-4 md:p-5 text-center shadow-[6px_6px_0_0_#2b2b28] relative overflow-hidden flex flex-col justify-between min-h-[140px]">
+            <!-- Current Clue Banner with definition text shifted higher up -->
+            <div class="w-full bg-[#3b7080] text-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl p-3 md:p-4 text-center shadow-[6px_6px_0_0_#2b2b28] relative overflow-hidden flex flex-col justify-between min-h-[120px]">
                 <div class="flex items-center justify-between">
                     <!-- Retro Timer Badge -->
                     <div id="timer-badge" class="px-3.5 py-1.5 bg-[#d49e35] text-[#2b2b28] font-mono-retro font-black text-base md:text-lg tracking-widest rounded-xl uppercase border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] flex items-center justify-center">
@@ -188,8 +188,8 @@
                         </button>
                     </div>
                 </div>
-                <!-- Definition text centered and formatted for 2 lines -->
-                <div class="flex-1 flex items-center justify-center pt-2 pb-1">
+                <!-- Definition text aligned to top for higher placement -->
+                <div class="flex-1 flex items-start justify-center pt-2 pb-1">
                     <p id="target-definition" class="selectable-text text-lg md:text-xl font-bold italic transition-all duration-300 px-4 leading-relaxed max-w-2xl">
                         Press the right arrow [ -> ] to start definition and timer!
                     </p>
@@ -205,7 +205,7 @@
 
         </section>
 
-        <!-- Sidebar / Examples Panel & Controls (Takes 2 Columns out of 7 for extra width) -->
+        <!-- Sidebar / Examples Panel & Controls (Takes 2 Columns out of 7) -->
         <aside id="sidebar" class="lg:col-span-2 bg-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl p-5 shadow-[6px_6px_0_0_#2b2b28] flex flex-col justify-between hidden lg:flex space-y-4 h-full">
             
             <!-- Wider Examples Panel with larger font size -->
