@@ -125,10 +125,10 @@
     <!-- Top Navigation Header -->
     <header class="max-w-7xl w-full mx-auto bg-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl mb-4 shadow-[6px_6px_0_0_#2b2b28] overflow-hidden">
         <div class="console-stripe w-full"></div>
-        <div class="p-4 flex flex-wrap justify-between items-center">
-            <div class="flex items-center space-x-4">
-                <!-- Pure Logo Image without background or borders -->
-                <div class="w-12 h-14 flex items-center justify-center">
+        <div class="p-3 md:p-4 flex flex-wrap justify-between items-center">
+            <div class="flex items-center space-x-3 md:space-x-4">
+                <!-- Larger Pure Logo Image without background or borders -->
+                <div class="w-14 h-16 md:w-16 md:h-20 flex items-center justify-center shrink-0">
                     <img src="teacher-logo.png" alt="Angry Teacher Logo" class="w-full h-full object-contain filter drop-shadow-[2px_2px_0_#2b2b28]" />
                 </div>
                 <div>
@@ -164,16 +164,16 @@
         </div>
     </header>
 
-    <!-- Main Container -->
-    <main class="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 flex-1 items-stretch">
+    <!-- Main Container: Grid layout changed to 7 columns (5 for game, 2 for wider sidebar) -->
+    <main class="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-7 gap-6 flex-1 items-stretch">
         
-        <!-- Game Section (Takes 3 Columns on Large Screens) -->
-        <section class="lg:col-span-3 flex flex-col justify-start items-center space-y-4">
+        <!-- Game Section (Takes 5 Columns on Large Screens) -->
+        <section class="lg:col-span-5 flex flex-col justify-start items-center space-y-4">
             
-            <!-- Current Clue Banner with Target Pronunciation Speaker, Larger Timer & Right Arrow -->
+            <!-- Current Clue Banner: Height adjusted so definition comfortably fits in two lines -->
             <div class="w-full bg-[#3b7080] text-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl p-4 md:p-5 text-center shadow-[6px_6px_0_0_#2b2b28] relative overflow-hidden flex flex-col justify-between min-h-[140px]">
                 <div class="flex items-center justify-between">
-                    <!-- Retro Timer Badge without stopwatch icon & with larger text -->
+                    <!-- Retro Timer Badge -->
                     <div id="timer-badge" class="px-3.5 py-1.5 bg-[#d49e35] text-[#2b2b28] font-mono-retro font-black text-base md:text-lg tracking-widest rounded-xl uppercase border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] flex items-center justify-center">
                         <span id="timer-text">25s</span>
                     </div>
@@ -188,9 +188,9 @@
                         </button>
                     </div>
                 </div>
-                <!-- Definition text aligned higher up -->
-                <div class="flex-1 flex items-start justify-center pt-2 pb-1">
-                    <p id="target-definition" class="selectable-text text-base md:text-xl font-bold italic transition-all duration-300 px-4 leading-snug">
+                <!-- Definition text centered and formatted for 2 lines -->
+                <div class="flex-1 flex items-center justify-center pt-2 pb-1">
+                    <p id="target-definition" class="selectable-text text-lg md:text-xl font-bold italic transition-all duration-300 px-4 leading-relaxed max-w-2xl">
                         Press the right arrow [ -> ] to start definition and timer!
                     </p>
                 </div>
@@ -205,20 +205,20 @@
 
         </section>
 
-        <!-- Sidebar / Examples Panel & Controls (Stretched to match grid bottom line) -->
-        <aside id="sidebar" class="bg-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl p-5 shadow-[6px_6px_0_0_#2b2b28] flex flex-col justify-between hidden lg:flex space-y-4 h-full">
+        <!-- Sidebar / Examples Panel & Controls (Takes 2 Columns out of 7 for extra width) -->
+        <aside id="sidebar" class="lg:col-span-2 bg-[#f4efdf] border-3 border-[#2b2b28] rounded-2xl p-5 shadow-[6px_6px_0_0_#2b2b28] flex flex-col justify-between hidden lg:flex space-y-4 h-full">
             
-            <!-- Examples Panel (Full height layout matching cards) -->
+            <!-- Wider Examples Panel with larger font size -->
             <div id="examples-panel" class="bg-[#e8e2d0] rounded-2xl p-5 border-2 border-[#2b2b28] shadow-inner flex-1 flex flex-col justify-between overflow-hidden">
                 <div class="flex flex-col h-full overflow-y-auto pr-1">
                     <div class="flex items-center justify-between border-b-2 border-[#2b2b28] pb-3 mb-4">
-                        <h3 class="font-black text-[#2b2b28] text-base flex items-center gap-2">
+                        <h3 class="font-black text-[#2b2b28] text-base md:text-lg flex items-center gap-2">
                             <i class="fa-solid fa-book-open text-[#3b7080]"></i> EXAMPLES
                         </h3>
                     </div>
 
-                    <div id="examples-content" class="selectable-text text-sm md:text-base text-[#2b2b28] space-y-3 italic flex-1 flex flex-col justify-center font-medium leading-relaxed">
-                        <p class="text-[#7c7668] text-center not-italic font-mono-retro text-xs">Select a correctly guessed card on the grid to view example sentences here.</p>
+                    <div id="examples-content" class="selectable-text text-[#2b2b28] space-y-3.5 italic flex-1 flex flex-col justify-center font-medium leading-relaxed">
+                        <p class="text-[#7c7668] text-center not-italic font-mono-retro text-xs md:text-sm">Select a correctly guessed card on the grid to view example sentences here.</p>
                     </div>
                 </div>
             </div>
@@ -785,7 +785,7 @@
                 // Show instruction only at start of level
                 this.targetWord = null;
                 this.isRoundActive = false;
-                this.targetDefEl.textContent = "Click the right arrow [ -> ] to load the first definition and start 25s timer!";
+                this.targetDefEl.textContent = "Click the right arrow [ -> ] to start definition and timer!";
                 this.timerTextEl.textContent = "25s";
             }
 
@@ -834,7 +834,7 @@
             }
 
             resetExamplesPanel() {
-                this.examplesContentEl.innerHTML = `<p class="text-[#7c7668] text-center not-italic font-mono-retro text-xs">Select a correctly guessed card on the grid to view example sentences here.</p>`;
+                this.examplesContentEl.innerHTML = `<p class="text-[#7c7668] text-center not-italic font-mono-retro text-xs md:text-sm">Select a correctly guessed card on the grid to view example sentences here.</p>`;
             }
 
             updateExamplesPanel(wordObj) {
@@ -845,34 +845,34 @@
                 const s3 = wordObj.sentences[2] || '';
 
                 this.examplesContentEl.innerHTML = `
-                    <div class="p-3 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] relative group">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="font-bold text-[#c04838] not-italic block text-xs font-mono-retro">1. EXAMPLE</span>
+                    <div class="p-3.5 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] relative group">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="font-bold text-[#c04838] not-italic block text-xs md:text-sm font-mono-retro">1. EXAMPLE</span>
                             <button class="btn-speak-sentence hover:scale-110 text-[#2b2b28] hover:text-[#c04838] p-1 transition" data-sentence="${encodeURIComponent(s1)}" title="Listen to Sentence">
-                                <i class="fa-solid fa-volume-high text-sm"></i>
+                                <i class="fa-solid fa-volume-high text-base"></i>
                             </button>
                         </div>
-                        <p class="leading-relaxed text-sm">"${s1}"</p>
+                        <p class="leading-relaxed text-sm md:text-base font-medium">"${s1}"</p>
                     </div>
 
-                    <div class="p-3 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] relative group">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="font-bold text-[#3b7080] not-italic block text-xs font-mono-retro">2. EXAMPLE</span>
+                    <div class="p-3.5 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] relative group">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="font-bold text-[#3b7080] not-italic block text-xs md:text-sm font-mono-retro">2. EXAMPLE</span>
                             <button class="btn-speak-sentence hover:scale-110 text-[#2b2b28] hover:text-[#3b7080] p-1 transition" data-sentence="${encodeURIComponent(s2)}" title="Listen to Sentence">
-                                <i class="fa-solid fa-volume-high text-sm"></i>
+                                <i class="fa-solid fa-volume-high text-base"></i>
                             </button>
                         </div>
-                        <p class="leading-relaxed text-sm">"${s2}"</p>
+                        <p class="leading-relaxed text-sm md:text-base font-medium">"${s2}"</p>
                     </div>
 
-                    <div class="p-3 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] relative group">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="font-bold text-[#547b4b] not-italic block text-xs font-mono-retro">3. EXAMPLE</span>
+                    <div class="p-3.5 bg-[#f4efdf] rounded-xl border-2 border-[#2b2b28] shadow-[2px_2px_0_0_#2b2b28] relative group">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="font-bold text-[#547b4b] not-italic block text-xs md:text-sm font-mono-retro">3. EXAMPLE</span>
                             <button class="btn-speak-sentence hover:scale-110 text-[#2b2b28] hover:text-[#547b4b] p-1 transition" data-sentence="${encodeURIComponent(s3)}" title="Listen to Sentence">
-                                <i class="fa-solid fa-volume-high text-sm"></i>
+                                <i class="fa-solid fa-volume-high text-base"></i>
                             </button>
                         </div>
-                        <p class="leading-relaxed text-sm">"${s3}"</p>
+                        <p class="leading-relaxed text-sm md:text-base font-medium">"${s3}"</p>
                     </div>
                 `;
 
@@ -885,16 +885,16 @@
 
                         if (soundEngine.activeSentenceSpeechBtn && soundEngine.activeSentenceSpeechBtn !== btn) {
                             const oldIcon = soundEngine.activeSentenceSpeechBtn.querySelector('i');
-                            if (oldIcon) oldIcon.className = "fa-solid fa-volume-high text-sm";
+                            if (oldIcon) oldIcon.className = "fa-solid fa-volume-high text-base";
                         }
 
                         soundEngine.toggleSpeech(rawSentence, (isPlaying) => {
                             if (isPlaying) {
                                 soundEngine.activeSentenceSpeechBtn = btn;
-                                icon.className = "fa-solid fa-stop text-sm text-[#c04838]";
+                                icon.className = "fa-solid fa-stop text-base text-[#c04838]";
                             } else {
                                 soundEngine.activeSentenceSpeechBtn = null;
-                                icon.className = "fa-solid fa-volume-high text-sm";
+                                icon.className = "fa-solid fa-volume-high text-base";
                             }
                         });
                     });
